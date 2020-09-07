@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
+   <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/reset.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/user-profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/company-profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+    <title>Saved Restaurants</title>
+    
+    <style>
+        .custom-container{
+            background-color: transparent;
+        }
+        .star i {
+            color: #da3743;
+        }
+    </style>
+
+</head>
+<body id="profile-body">
+    
+    {% include 'partials/header.html' %}
+
+    <div class="container custom-container bg-white shadow border-top">
+        <div class="row username-box">  
+            {% if user.profile_img %}
+                <a data-fancybox="gallery" href="{{user.profile_img.url}}"><img src="{{user.profile_img.url}}"></a>
+            {% else %}
+                <img src="{% static 'images/profile.png' %}" alt="">
+            {% endif %}
+            <div>
+                <h2> {{user.first_name|capfirst}} {{user.last_name|capfirst}} </h2>
+                <span>0 points</span>
+            </div>
+        </div>
+    </div>
+
+    <main class="mb-5 mt-3" style="min-height: 600px;">
+        <div class="container custom-container">
+            <div class="inner-container">
+                <div class="row">
+                    <div class="col-lg-2">
+                        <nav>
+                            <ul class="profile-menu-list">
+                                <li><a href="{% url 'account:user-profile' user.pk %}">Reservations</a></li>
+                                <li><a href="{% url 'account:user-update' user.pk %}">Account Details</a></li>
+                                <li><a href="#">Delete Account</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="col-lg-10 company-list-container mt-3 mb-3">
+                        <div class="name">
+                            <h3 class="text-center bold">Your Saved Restaurants</h3>
+                        </div>
+                        <div class="row company-list">
+                            {% if saved_restaurants %}
+                            {% for restaurant_obj in saved_restaurants %}
+                                <a href="{% url 'core:company-profile' restaurant_obj.saved_restaurant.company.pk %}" class="company-item-link mb-4 ">
+                                    <div class="company-item row pt-3 pb-3 bottom-border">
+                                        <div class="col-lg-3 company-profile-img">
+                                            {% if restaurant_obj.saved_restaurant.company.cover_photo %}
+                                                <img src="{{restaurant_obj.saved_restaurant.company.cover_photo.url}}" alt="">
+                                            {% else %}
+                                                <img src="{% static 'images/img3.jpg' %}" alt="">
+                                            {% endif %}
+                                           
+                                        </div>
+                                        
+                                        <div class="col-lg-9">
+                                            <p class="name bold mb-2 pb-2">{{restaurant_obj.saved_restaurant.company.company_name}}</p>
+                                            <div class="review-box d-flex rating-box">
+                                                <div data-type="{{restaurant_obj.company_overall}}" class="stars rating-box d-flex">
+                                                    <div class="star"><i class="far fa-star"></i></div>
+                                                    <div class="star"><i class="far fa-star"></i></div>
+                                                    <div class="star"><i class="far fa-star"></i></div>
+                                                    <div class="star"><i class="far fa-star"></i></div>
+                                                    <div class="star"><i class="far fa-star"></i></div>
+                                                </div>
+                                                <p class="review-text ml-2">{{restaurant_obj.saved_restaurant.company.company_comment.all|length}} reviews</p>
+                                            </div>
+                                            <div class="d-flex align-items-center mt-2 mb-2">
+                                                <p class="location">{{restaurant_obj.saved_restaurant.company.city_location}}, {{restaurant_obj.saved_restaurant.company.province_location}}</p>
+                                                <span class="ml-3 booking-count">
+                                                    <span>
+                                                        <svg width = 20 viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M15.5,5 C15.2239,5 15,5.223846 15,5.5 L15,6.5 C15,6.77615 15.2239,7 15.5,7 L17.5858,7 L14,10.58578 L12.70711,9.29291 L12.35355,8.93933 C12.15829,8.74408 11.84171,8.74408 11.64645,8.93933 L11.29289,9.29291 L5,15.5858 L5,7 L11.5,7 C11.77614,7 12,6.77615 12,6.5 L12,5.5 C12,5.22385 11.77614,5 11.5,5 L5,5 C3.89543,5 3,5.89542 3,7 L3,17 C3,18.1046 3.89543,19 5,19 L19,19 C20.1046,19 21,18.1046 21,17 L21,14.5 C21,14.2238 20.7761,14 20.5,14 L19.5,14 C19.2239,14 19,14.2238 19,14.5 L19,17 L6.4142,17 L12,11.41422 L13.2929,12.70709 L13.6464,13.06067 C13.8417,13.25592 14.1583,13.25592 14.3536,13.06067 L14.7071,12.70709 L19,8.41422 L19,10.5 C19,10.77615 19.2239,11 19.5,11 L20.5,11 C20.7761,11 21,10.77615 21,10.5 L21,6 L21,5.5 C21,5.223846 20.7761,5 20.5,5 L20,5 L15.5,5 Z" fill="#2D333F" fill-rule="nonzero"></path></g></svg>
+                                                    </span>
+                                                    <span>Booked {{restaurant_obj.reservation_count}} times today</span>
+                                                </span>
+                                            </div>
+                                            <p class="description">{{restaurant_obj.saved_restaurant.company.description|slice:":255"}}...</p>
+                                            <div class="d-flex align-items-center mt-2">
+                                                <span>TakeOut : </span>
+                                                <div class="ml-3 phone-number d-flex">
+                                                    <i class="fas fa-phone-alt pr-2"></i>
+                                                    {% if restaurant_obj.saved_restaurant.company.phone_number %}
+                                                        <p>{{restaurant_obj.saved_restaurant.company.phone_number}}</p>
+                                                    {% else %}
+                                                        <p>xxx xxx xx xx</p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                            {% else %}
+                                <p class="full text-center bold m-4">You haven't saved any restaurant.</p>
+                                <div class="full text-center mb-5">
+                                    <i class="far fa-folder-open" style="font-size: 50px;"></i>
+                                </div>
+                            {% endif %}
+                        </div>                      
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    {% include 'partials/footer.html' %}
+
+    
+    <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>
+        for(var index = 0; index < $('.rating-box').length; index++ ){
+            for(var i = 0; i< parseInt($('.rating-box').eq(index).data('type'));i++){
+                $('.rating-box').eq(index).find('i').eq(i).removeClass('far').addClass('fas')
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+{% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/reset.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/user-profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/company-profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+    <title>Company List</title>
+
+    <style>
+        .star i{
+            color: #da3743;
+        }
+        .img-box-container{
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        .company-profile-img img:hover{
+            transform: scale(1.2, 1.2);
+            -ms-transform: scale(1.2, 1.2);
+            -webkit-transform: scale(1.2, 1.2);
+        }
+    </style>
+</head>
+<body id="profile-body">
+    
+    {% include 'partials/header.html' %}
+
+    <main class="pt-5 mb-5" style="min-height: 600px;">
+        <div class="container main-container">
+            <h1 class="company-name bold text-center"> {{cuisine}} Cuisines</h1>
+            <div class="row company-list">
+                <div class="search-sort-box d-flex full justify-content-between">
+                    <div class="sidebar-box pt-2 pl-2 ftco-animate">
+                        <form action="#" method='GET' class="search-form">
+                            <div class="form-group">
+                                <input type='text' name='q' class='form-control' placeholder='Search' />
+                                <button type="submit" class="icon icon-search"><i class="fas fa-search"></i></button>
+                            </div>
+                        </form> 
+                    </div>
+                    <div class="cuisine-sort d-flex align-items-center mr-2">
+                        <div class="d-flex">
+                            <form id="cuisineFilter" class="cuisine-sort-form" style="width: 350px;">
+                                <select name="cuisineSort" class="form-control">
+                                    <option value="newest">Newest</option>
+                                    <option value="highest">Highest Raiting</option>
+                                    <option value="lowest">Lowest Raiting</option>
+                                </select>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="cuisinesBox full" id="cuisine-Box">
+                {% for company in companies %}
+                   <a href="{% url 'core:company-profile' company.pk %}" class="full">
+                        <div class="company-item row pt-3 pb-3 mb-5 bottom-border">
+                            <div class="col-12 col-lg-4 company-profile-img">
+                                <div class="img-box-container">
+                                    {% if company.cover_photo %}
+                                        <img src="{{company.cover_photo.url}}" alt="">
+                                    {% else %}
+                                        <img src="{% static 'images/img3.jpg' %}" alt="">
+                                    {% endif %}
+                                </div>   
+                            </div>
+                            <div class="col-12 col-lg-8">
+                                <p class="name bold mb-2 pb-2">{{company.company_name}} </p>
+                                <div class="review-box d-flex mb-2">
+                                    <div data-type = '{{company.overall}}'  class="stars d-flex rating-box">
+                                            <div class="star"><i class="far fa-star"></i></div>
+                                            <div class="star"><i class="far fa-star"></i></div>
+                                            <div class="star"><i class="far fa-star"></i></div>
+                                            <div class="star"><i class="far fa-star"></i></div>
+                                            <div class="star"><i class="far fa-star"></i></div>
+                                    </div>
+                                    <p class="review-text ml-2">{{company.company_comment.all.count}} reviews</p>
+                                </div>
+                                <div class="d-flex align-items-center mb-3">
+                                    <p class="location bold">{{company.city_location}}, {{company.country_location}}</p>
+                                </div>
+                                <p class="description">
+                                    {{company.description|slice:":255"}}...</p>
+                                <div class="d-flex align-items-center">
+                                    <span class="bold">TakeOut : </span>
+                                    <div class="ml-3 phone-number d-flex mt-2">
+                                        <i class="fas fa-phone-alt pr-2"></i> 
+                                        <p>{{company.phone_number}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                   </a> 
+                {% endfor %}
+                </div>
+            </div>
+            {% comment %} <div class="row justify-content-center"> {% endcomment %}
+                <div class="row mt-5">
+                    <div class="col text-center">
+                        <div class="block-27">
+                            {% if is_paginated %}
+                            <ul class="pagination d-flex justify-content-center">
+                                {% if page_obj.has_previous %}
+                                <li><a class='page-link' href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                                {% else %}
+                                <li class="disabled"><span class='page-link'>&laquo;</span></li>
+                                {% endif %}
+                                {% for i in paginator.page_range %}
+                                {% if page_obj.number == i %}
+                                    <li class="active"><span class='page-link'>{{ i }} <span class="sr-only">(current)</span></span></li>
+                                {% else %}
+                                    <li><a class='page-link' href="?page={{ i }}">{{ i }}</a></li>
+                                {% endif %}
+                                {% endfor %}
+                                {% if page_obj.has_next %}
+                                <li><a class='page-link' href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                                {% else %}
+                                <li class="disabled"><span class='page-link'>&raquo;</span></li>
+                                {% endif %}
+                            </ul>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+            {% comment %} </div> {% endcomment %}
+        </div>
+    </main>
+
+    {% include 'partials/footer.html' %}
+
+    <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>
+        $(document).ready(function(){
+
+            for(var index = 0; index < $('.rating-box').length; index++ ){
+                for(var i = 0; i< parseInt($('.rating-box').eq(index).data('type'));i++){
+                    $('.rating-box').eq(index).find('i').eq(i).removeClass('far').addClass('fas')
+            }
+            }
+        });
+        document.querySelectorAll('form#cuisineFilter > select').forEach(select_element => {
+            select_element.addEventListener('change', ()=>{
+                console.log(select_element.value);
+                const filterData = $('#cuisineFilter').serialize();
+                console.log(filterData);
+                    $.ajax({
+                        url: `{% url 'core:cuisine-filter' cuisine.title %}?${filterData}`,
+                        // data : filterData,
+                        success: function(data){
+                            document.querySelector('#cuisine-Box').innerHTML = data;;
+                            
+                        },
+                        error: function(data){
+                            alert('error');
+                        }
+                    }).then(function(){
+                        
+                        for(var index = 0; index < $('.rating-box').length; index++ ){
+                            for(var i = 0; i< parseInt($('.rating-box').eq(index).data('type'));i++){
+                                $('.rating-box').eq(index).find('i').eq(i).removeClass('far').addClass('fas')
+                            }
+                        }
+
+                    });
+                    
+                    
+            })
+        })
+    </script>
+</body>
+</html>

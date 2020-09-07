@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+{% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/reset.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/user-profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/company-profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+    <title>New Reservation</title>
+
+   
+
+</head>
+<body id="company-admin-body">
+    
+    {% include 'partials/company-header.html' %}
+    {% include 'partials/mobile-menu.html' %}
+
+    <main>
+        <div class="full">
+            <div class="row  justify-content-center">
+                <div class="col-3 col-lg-2 bg-white p-0 admin-menu-col header-shadow">
+                    <div class="admin-menu-box mt-5">
+                        <nav>
+                            <ul class="admin-menu-list">
+                                <li>
+                                    <a href="{% url 'core:company-profile' user.company.pk %}">
+                                        <div class="d-flex">
+                                            <i class="fas fa-home"></i>
+                                            <span class="ml-2 bold">{{request.user.company.company_name}}</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'account:company-profile' user.company.pk %}">
+                                        <div class="d-flex">
+                                            <i class="fas fa-cogs"></i>
+                                            <span class="ml-2 bold">Company Settings</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'restaurant:photo' %}">
+                                        <div class="d-flex">
+                                            <i class="fas fa-images"></i>
+                                            <span class="ml-2 bold">Photos</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'restaurant:menu' %}">
+                                        <div class="d-flex">
+                                            <i class="fas fa-hamburger"></i>
+                                            <span class="ml-2 bold">Menus</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'restaurant:company-infos' user.company.pk %}">
+                                        <div class="d-flex">
+                                            <i class="fas fa-info-circle"></i>
+                                            <span class="ml-2 bold">Informations</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'restaurant:company-tables' user.company.pk %}">
+                                        <div class="d-flex">
+                                            <i class="fas fa-table"></i>
+                                            <span class="ml-2 bold">Tables</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'restaurant:company-reservations' user.company.pk %}">
+                                        <div class="d-flex">
+                                            <i class="fas fa-clock"></i>
+                                            <span class="ml-2 bold">Reservations</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'restaurant:company-users' user.company.pk %}">
+                                        <div class="d-flex">
+                                            <i class="fas fa-users"></i>
+                                            <span class="ml-2 bold">Users</span>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <div class="col-9 col-lg-10">
+                    <div class="container mt-3">
+                        <div class="row reservation-detail-block">
+                            <h3 class="full bottom-border bold pb-3 mb-5">New Reservation</h3>
+                            <div class="comment-item full ">
+                                <h4 class="full bottom-border bold pb-3 mb-3 text-center">Reservation Details</h4>
+                                {% for reserve in reservation_detail %}
+                                    <div class="row">
+                                        <div class="col-lg-6 mb-3 reserve-author">
+                                        {% for reservation in reserve.reservation %}{{total_price.total_price}}
+                                            <div class="reserve-author-profile-img">{{reservation.user.first_name|first}}{{reservation.user.last_name|first}}</div>
+                                            <div class="reserve-author-username">{{reservation.user.username}}</div>
+                                            <div class="reserve-author-address">Sabirabad</div>  
+                                        {% endfor %}
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="d-flex">
+                                                <div class="d-flex ">
+                                                    <span class="bold mr-2">Reserve Date and Time : </span>
+                                                    <p>{% for reservation in reserve.reservation %}{{reservation.reserved_date}}, {{reservation.reserved_time|time:'H:i:s'}}{% endfor %}</p>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex">
+                                                <span class="bold mr-2">Party Size : </span>
+                                                <p> {% for size in reserve.table_size %}{{size}}{% endfor %} people </p>
+                                            </div>
+                                            <div class="d-flex">
+                                                <span class="bold mr-2">Total Price : </span>
+                                                <p>{% for total_price in reserve.reservation %}{{total_price.total_price}}{% endfor %} $</p>
+                                            </div>
+
+                                            <div class="d-flex align-items-center mb-3">
+                                                <span class="bold">Payment : </span>
+                                                {% if reservation.payment %}
+                                                    <i class="far fa-check-circle ml-2" style="color: green;"></i>
+                                                {% else %}
+                                                    <i class="far fa-times-circle ml-2" style="color: red;" ></i>
+                                                {% endif %}
+                                            </div>
+                                            
+                                            {% if reservation.occasion %}
+                                                <div class="d-flex">
+                                                    <span class="bold">Occasion : </span>
+                                                    <p class="ml-1">{{reservation.occasion}}</p>
+                                                </div>
+                                            {% endif %}
+
+                                            {% if reservation.special_request %}
+                                                <div class="d-flex">
+                                                    <span class="bold">Special Request : </span>
+                                                    <p class="ml-1">{{reservation.special_request}}</p>
+                                                </div>
+                                            {% endif %}
+                                            
+                                            {% if not reservation.accept and not reservation.denied %}
+                                            <div class="d-flex mt-3" id="accept-denied-forms">
+                                                <form action="{% url 'restaurant:reservation-detail' reservation.pk %}" id="acceptReservation">
+                                                    {% csrf_token %}
+                                                    <input type="submit" class="mt-2 btn btn-success mr-2" value="Accept">
+                                                </form>
+                                                <form action="{% url 'restaurant:reservation-detail' reservation.pk %}" id="deniedReservation">
+                                                    {% csrf_token %}
+                                                    <input type="submit" class="mt-2 btn btn-danger" value="Denied">
+                                                </form>
+                                            </div>
+                                            {% elif reservation.accept %}
+                                                <p class="mt-3 bold" style="color: green;">You have already accepted this reservation</p>
+                                            {% elif reservation.denied %} 
+                                                <p class="mt-3 bold" style="color: red;">You have already denied this reservation</p>  
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                <div class="col mt-5">
+                                    {% for category in menu_categories %}
+                                        <div class="menu-section pl-4 pr-4 mb-4 bottom-border">
+                                            <div class="menu-section-header mb-4 text-center"><h4 class="bold">{{category.title}}</h4></div>
+                                            <div class="row menu-items">
+                                                {% for portion in menus %}
+                                                    {% for menu in portion.menu  %}
+                                                        {% if menu.menu_type == category %}
+                                                            <div class="col-sm-6">
+                                                                <div class="menu-item">
+                                                                    <div class="portion-count">
+                                                                    
+                                                                        <span>{{portion.portion_count}} portion  </span>
+                                                                    </div>
+                                                                    
+                                                                    <div class="menu-item-header">
+                                                                        <div class="menu-title"><span>{{menu.title}}</span></div>
+                                                                        <div class="menu-price"><span>${{menu.price}}</span></div>
+                                                                    </div>
+                                                                    <div class="menu-description">
+                                                                        <p>{{menu.description}}</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endfor %}
+            
+                                                {% endfor %}
+                                                
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Delete Photo</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure to delete this photo?</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+              <button type="button" class="btn btn-primary">Yes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script> 
+    
+    <script>
+        $('#acceptReservation').on('submit', function(e){
+            e.preventDefault()  
+            
+            $.ajax({
+                type: "POST",
+                url: $('#acceptReservation').attr('action'),
+                data:  {
+                    csrfmiddlewaretoken:$('#acceptReservation').find('input[name=csrfmiddlewaretoken]').val(),
+                    form_id : $('#acceptReservation').attr('id')
+                },
+                dataType: 'json',
+                success: function (data) {
+                    $('#accept-denied-forms').html(data.result)
+                    console.log(data);
+                },
+                error: function(data) {
+                    alert("error");
+                    console.log(data);
+                }
+            });
+        });
+
+        $('#deniedReservation').on('submit', function(e){
+            e.preventDefault()  
+            
+            $.ajax({
+                type: "POST",
+                url: $('#deniedReservation').attr('action'),
+                data:  {
+                    csrfmiddlewaretoken:$('#deniedReservation').find('input[name=csrfmiddlewaretoken]').val(),
+                    form_id : $('#deniedReservation').attr('id')
+                },
+                dataType: 'json',
+                success: function (data) {
+                    $('#accept-denied-forms').html(data.result)
+                    console.log(data);
+                },
+                error: function(data) {
+                    alert("error");
+                    console.log(data);
+                }
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function(){
+           
+
+            $('.link-box').hover(function(){
+                height = $(this).height()
+                $(this).stop().animate({
+                    borderRadius : '50%',
+                    width : height
+                    })
+            }, function(){
+                $(this).animate({
+                    borderRadius : '10px',
+                    width : '250px'
+                    })
+            })
+        });
+    </script>
+</body>
+</html>

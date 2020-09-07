@@ -1,0 +1,110 @@
+{% load static custom_tags %}
+
+<header class="admin-header header-shadow" >
+    <div class="container-fluid ">
+        <div class="row justify-content-between">
+            <div class="left side">
+                <button type="button" class="admin-menu-btn">
+                    <div class="d-column line-box">
+                        <div class="line"></div>
+                        <div class="line"></div>
+                        <div class="line"></div>
+                    </div>
+                </button>
+                <a href="{% url 'core:home' %}">
+                    <img src="{% static 'images/logo.png' %}" class="admin-header-logo" width="230px" alt="">
+                </a>
+            </div>
+            <div class="right side">
+                
+                <a href="{% url 'account:user-profile' user.pk %}" class="d-flex user-profile-link">
+                    <div class="side">
+                        {% if user.profile_img %}
+                            <img src="{{user.profile_img.url}}" width="70px" height="100%" alt="Profile photo">
+                        {% else %}
+                            <img src="{% static 'images/profile2.png' %}" width="50px" alt="Profile photo">
+                        {% endif %}
+                        <div class="d-flex flex-direction-column ml-2 admin-user-box" style="color: #5B5B5B ;">
+                            <span class="mt-1">Welcome</span>
+                            <h5 class="bold">{{user.first_name}} {{user.last_name}}</h5>
+                        </div>
+                    </div>
+                </a>
+                
+                {% notification request.user as notifications %} 
+                <div class="notification">
+                    <button type="button" class="header-btn notification-btn">
+                        {% if notifications %}
+                            <span class="notification-count" style="top:28px;"></span>
+                        {% endif %}
+                        <i class="far fa-bell"></i>
+                    </button>
+                    <div class="custom-drop-down box3 scroll-y p-3 shadow" style="display: none;">
+                        <div class="triangle"></div>
+                        <span>Notifications</span>
+                        {% if notifications %}
+                            {% for notification in notifications %}
+                                {% if notification.notification_type == 'new_reservation' %}
+                                    <a class="pl-2 pr-2" href="{% url 'restaurant:company-reservations' user.company.pk %}">
+                                        <div class="d-flex align-items-center">
+                                            <i class="far fa-clock mr-3"></i>
+                                            <div class="d-column">
+                                                {{notification.text}}
+                                                <small>From {{notification.sender.email}}</small>   
+                                            </div>
+                                        </div>
+                                    </a>
+                                {% elif notification.notification_type == 'accept_reservation' %}
+                                    <a class="pl-2 pr-2 mb-2 d-column" href="{% url 'account:user-profile' request.user.pk %}">
+                                        <div class="d-flex align-items-center">
+                                            <i class="far fa-calendar-check mr-3"></i>
+                                            <div class="d-column">
+                                                {{notification.text}}
+                                                <small>By {{notification.sender.company.company_name}}</small>   
+                                            </div>
+                                        </div>
+                                        
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+
+                            <form  class="full mt-2 mb-2" id="readNotifications" action="{% url 'core:read-notifications' %}" method="POST">
+                                {% csrf_token %}
+                                <input type="submit" class="btn btn-outline-secondary float-r" value="Mark all as read!">
+                            </form>
+                        {% else %}
+                            <img src="{% static 'images/animat-bell-color.gif' %}" width="50%" class="m-auto" alt="">
+                            <p class="pl-2 pr-2 bold text-center">Nothing to see here, you’re all caught up!</p>
+                        {% endif %}
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+   
+</header>
+<script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+<script>
+    $('#readNotifications').on('submit', function(e){
+        e.preventDefault()  
+        
+        $.ajax({
+            type: "POST",
+            url: $('#readNotifications').attr('action'),
+            data:  {
+                csrfmiddlewaretoken:$('#readNotifications').find('input[name=csrfmiddlewaretoken]').val(),
+                form_id : $('#readNotifications').attr('id')
+            },
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+            },
+            error: function(data) {
+                alert("error");
+                console.log(data);
+            }
+        });
+    });
+</script>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/reset.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/user-profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/company-profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+    <title>Company Users</title>
+
+    
+
+</head>
+<body id="company-admin-body">
+    
+    {% include 'partials/company-header.html' %}
+    {% include 'partials/mobile-menu.html' %}
+
+    <main class="full-h">
+        <div class="full full-h">
+            <div class="row full-h  justify-content-center">
+                <div class="col-3 col-lg-2 bg-white p-0 admin-menu-col header-shadow">
+                    <div class="admin-menu-box mt-5">
+                        <nav>
+                            <ul class="admin-menu-list">
+                                <li>
+                                    <a href="{% url 'core:company-profile' user.company.pk %}">
+                                        <div class="d-flex">
+                                            <i class="fas fa-home"></i>
+                                            <span class="ml-2 bold">{{request.user.company.company_name}}</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'account:company-profile' user.company.pk %}">
+                                        <div class="d-flex">
+                                            <i class="fas fa-cogs"></i>
+                                            <span class="ml-2 bold">Company Settings</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'restaurant:photo' %}">
+                                        <div class="d-flex">
+                                            <i class="fas fa-images"></i>
+                                            <span class="ml-2 bold">Photos</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'restaurant:menu' %}">
+                                        <div class="d-flex">
+                                            <i class="fas fa-hamburger"></i>
+                                            <span class="ml-2 bold">Menus</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'restaurant:company-infos' user.company.pk %}">
+                                        <div class="d-flex">
+                                            <i class="fas fa-info-circle"></i>
+                                            <span class="ml-2 bold">Informations</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'restaurant:company-tables' user.company.pk %}">
+                                        <div class="d-flex">
+                                            <i class="fas fa-table"></i>
+                                            <span class="ml-2 bold">Tables</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'restaurant:company-reservations' user.company.pk %}">
+                                        <div class="d-flex">
+                                            <i class="fas fa-clock"></i>
+                                            <span class="ml-2 bold">Reservations</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'restaurant:company-users' user.company.pk %}">
+                                        <div class="d-flex">
+                                            <i class="fas fa-users"></i>
+                                            <span class="ml-2 bold">Users</span>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <div class="col-9 col-lg-10">
+                    <div class="container mt-5 company-admin-container">
+                        <div class="row bg-white header-shadow p-3">
+                            <h3 class="full bottom-border bold pb-3 mb-5 text-center">All users reserved your restaurant</h3>
+                            <div class="user-box full">
+                                {% if reserved_users %}
+                                    {% for user in reserved_users %}
+                                        <div class="user-item row">
+                                            <div class="col-lg-3 comment-author">
+                                                <div class="reserve-author-profile-img">{{user.user.first_name|slice:"1"}}{{user.user.last_name|slice:"1"}}</div>
+                                                <div class="user-username">{{user.user.username}}</div>
+                                                <div class="user-address">San Francisco</div>
+                                                <div class="user-comments-count">
+                                                    <p class="review-text mr-4 ml-4"><i class="far fa-comment"></i> {% if user.reviews > 1 %}{{user.reviews}} reviews {% else %} {{user.reviews}} review{% endif %}</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-9">
+                                                <div class="d-flex">
+                                                    <div class="posted-date pl-4">
+                                                        <p>Last Reservation on {{user.last_reserved_date}}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div class="posted-date pl-4">
+                                                        <p>Number of reservations : {{user.reservation_count}} </p>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div class="posted-date pl-4">
+                                                        <p>Total money for all reservations : {{user.total_price}}$</p>
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <p class="full text-center bold">No Users Yet</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>
+        $(document).ready(function(){
+
+            $('.link-box').hover(function(){
+                height = $(this).height()
+                $(this).stop().animate({
+                    borderRadius : '50%',
+                    width : height
+                    })
+            }, function(){
+                $(this).animate({
+                    borderRadius : '10px',
+                    width : '250px'
+                    })
+            })
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+
+{% load static %}
+
+
+{% for comment in comments %}
+        <div class="comment-item row">
+            <div class="col-3 comment-author">
+                <div class="comment-author-profile-img">{{comment.user.first_name|capfirst|first}}{{comment.user.last_name|capfirst|first}}</div>
+                <div class="username">{{comment.user.username}}</div>
+                <div class="address">San Francisco</div>
+                <div class="user-comments-count">
+                    <p class="review-text mr-4 ml-4"><i class="far fa-comment"></i> {% for user in users %}{% if user == comment.comment.user %}{{user.user_comment.all.count}}{% endif %}{% endfor %} reviews</p>
+                </div>
+            </div>
+            <div class="col-9">
+                <div class="d-flex">
+                    <div data-type = '{{comment.overall}}'  class="stars d-flex rating-box">
+                        <div class="star"><i class="far fa-star"></i></div>
+                        <div class="star"><i class="far fa-star"></i></div>
+                        <div class="star"><i class="far fa-star"></i></div>
+                        <div class="star"><i class="far fa-star"></i></div>
+                        <div class="star"><i class="far fa-star"></i></div>
+                    </div>
+                    <div class="posted-date pl-4">
+                        <p>Dined on {{comment.commented_at|date:"N d, Y"}}</p>
+                    </div>
+                </div>
+
+                <style>
+                    .rating-menu-list strong{
+                        margin-right: 5px;
+                    }
+                    .rating-menu-list span{
+                        color: red;
+                        font-size: 15px;
+                        font-weight: bold;
+                    }
+                </style>
+
+                <div class="d-flex">
+                    <ul class="d-flex rating-menu-list">
+                        <li class="d-flex ml-2">
+                            <strong>Overall</strong>
+                            <span>{{comment.overall}}.</span>
+                        </li>
+                        <li class="d-flex ml-2">
+                            <strong>Food</strong>
+                            <span>{{comment.ratingFood}}.</span>
+                        </li>
+                        <li class="d-flex ml-2">
+                            <strong>Service</strong>
+                            <span>{{comment.ratingService}}.</span>
+                        </li>
+                        <li class="d-flex ml-2">
+                            <strong>Ambience</strong>
+                            <span>{{comment.ratingAmbience}}.</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="post-body">
+                    <p>{{comment.text}}</p>
+                    {% if comment.comment_image %}
+                        <div class="col-3 mb-2 photo-box">
+                            <a data-fancybox="gallery" href="{{comment.comment_image.url}}"><img style="width:100%;" src="{{comment.comment_image.url}}"></a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+
+

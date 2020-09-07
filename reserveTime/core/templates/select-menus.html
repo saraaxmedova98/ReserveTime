@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/reset.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/user-profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/company-profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+    <title>Reservation Page</title>
+</head>
+<body id="profile-body">
+    
+    <header>
+        <div class="container custom-container shadow">
+            <div class="row justify-content-between">
+                <div class="left side">
+                    <a href="#">
+                        <img src="{% static 'images/logo.png' %}" width="250px" alt="">
+                    </a>
+                </div>
+                <div class="right side">
+                    <div class="user-profile left-border">
+                        <span> Hi, User <i class="fas fa-chevron-down" id="arrow-down"></i></span>
+                        <div class="custom-drop-down shadow" style="display: none;">
+                            <div class="triangle"></div>
+                            <span>Hello, User</span>
+                            <ul>
+                                <li><a href="#">My Profile</a></li>
+                                <li><a href="#">My Dining History</a></li>
+                                <li><a href="#">My Saved Restaurants</a></li>
+                                <li><a href="#">Sign out</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="reserve-table">
+                        <button type="button" class="header-btn"><i class="far fa-calendar"></i></button>
+                        <div class="custom-drop-down p-3" style="display: none;">
+                            <div class="triangle"></div>
+                            <span>Upcoming reservations</span>
+                            <p class="pl-2 pr-2">You have no upcoming reservations</p>
+                        </div>
+                    </div>
+                    <div class="notification">
+                        <button type="button" class="header-btn"><i class="far fa-bell"></i></button>
+                        <div class="custom-drop-down shadow p-3" style="display: none;">
+                            <div class="triangle"></div>
+                            <span>Notifications</span>
+                            <p class="pl-2 pr-2">Nothing to see here, you’re all caught up!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           
+        </div>
+       
+    </header>
+
+    <!-- <main class="mb-5"> -->
+        <div class="container main-register-container pb-5 ">
+            <form method="POST" id="selectMenusForm">
+                <div class="row">
+                    <div class="col">
+                        <div class="reserve-container shadow">
+                            <img style="width: 100%;height: 300px;" src="{% static 'images/city3.jpg' %}" alt="">
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="row">
+                    <div class="col-lg-11 mx-auto">
+                        <h4 class="menu-list-header">Menu List</h4>
+                        <div class="choosen-menu-list">
+                            <div class="col-lg-11 mb-5">
+                                <div class="choosen-items-container shadow">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-section pb-5 mb-4 bottom-border">
+                            <div class="row menu-items">
+                                {% for menu in menus %}
+                                    <div class="col-lg-6 position-relative">
+                                        <div class="menu-item-choose"><i class="far fa-check-circle saved-item-icon"></i></i></div>
+                                        <div class="menu-item menu-items-style">
+                                            <div class="menu-item-header">
+                                                <div class="menu-title menu-title-get"><span>{{menu.title}}</span></div>
+                                                <div class="menu-price menu-price-get"><span>{{menu.price}}</span></div>
+                                            </div>
+                                            <div class="menu-description">
+                                                <p>{{menu.description}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+            
+            </form>
+        </div>  
+    <!-- </main> -->
+    
+
+    <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>
+        $(document).ready(function(){
+            $('.header-btn').click(function(){
+                $('.custom-drop-down').hide()
+                $(this).siblings('.custom-drop-down').slideToggle()
+            });
+
+            $('.show-menu-btn').click(function(){
+                $('.menu-container').toggleClass('collapse-menu')
+                
+                if ($(this).text() == 'Show full menu') {
+                    $(this).text('Collapse Menu')
+                }
+                else{
+                    $(this).text('Show full menu')
+                }
+            });
+        });
+    </script>
+</body>
+</html>

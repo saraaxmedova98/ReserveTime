@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/fontawesome.min.css">
+    <link rel="stylesheet" href="css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/user-profile.css">
+    <link rel="stylesheet" href="css/company-profile.css">
+    <link rel="stylesheet" href="css/reserve-page.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <title>Restaurant Login</title>
+</head>
+<body id="profile-body">
+    
+    <header>
+        <div class="container custom-container shadow">
+            <div class="row justify-content-between">
+                <div class="left side">
+                    <a href="#">
+                        <img src="images/logo.png" width="250px" alt="">
+                    </a>
+                </div>
+                <div class="right side">
+                    <div class="user-profile left-border">
+                        <span> Hi, User <i class="fas fa-chevron-down" id="arrow-down"></i></span>
+                        <div class="custom-drop-down shadow" style="display: none;">
+                            <div class="triangle"></div>
+                            <span>Hello, User</span>
+                            <ul>
+                                <li><a href="#">My Profile</a></li>
+                                <li><a href="#">My Dining History</a></li>
+                                <li><a href="#">My Saved Restaurants</a></li>
+                                <li><a href="#">Sign out</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="reserve-table">
+                        <button type="button" class="header-btn"><i class="far fa-calendar"></i></button>
+                        <div class="custom-drop-down p-3" style="display: none;">
+                            <div class="triangle"></div>
+                            <span>Upcoming reservations</span>
+                            <p class="pl-2 pr-2">You have no upcoming reservations</p>
+                        </div>
+                    </div>
+                    <div class="notification">
+                        <button type="button" class="header-btn"><i class="far fa-bell"></i></button>
+                        <div class="custom-drop-down shadow p-3" style="display: none;">
+                            <div class="triangle"></div>
+                            <span>Notifications</span>
+                            <p class="pl-2 pr-2">Nothing to see here, you’re all caught up!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           
+        </div>
+       
+    </header>
+
+    <!-- <main class="mb-5"> -->
+        <div class="container main-register-container pb-5">
+            <div class="row">
+                <div class="col-lg-5 mx-auto pt-5">
+                    <form>
+                        <div class="form-group">
+                          <input type="email" class="form-control height" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email *">
+                         </div>
+                        <div class="form-group">
+                          <input type="password" class="form-control height" id="exampleInputPassword1" placeholder="Password *">
+                        </div>
+                        <div class="form-group form-check">
+                          <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                          <label class="form-check-label" for="exampleCheck1">Remember me</label>
+                          <a href="" class="float-right">Forgot password?</a>
+                        </div>
+                        <div class="form-group" style="text-align: center;">
+                        <input type="submit" value="Sign In" class="btn btn-danger px-5 register-user-btn" >
+                        </div>
+                    </form>
+                </div>
+            </div>
+        
+        </div>
+    <!-- </main> -->
+    
+    {% include 'partials/footer.html' %}
+
+
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('.header-btn').click(function(){
+                $('.custom-drop-down').hide()
+                $(this).siblings('.custom-drop-down').slideToggle()
+            });
+
+            $('.show-menu-btn').click(function(){
+                $('.menu-container').toggleClass('collapse-menu')
+                
+                if ($(this).text() == 'Show full menu') {
+                    $(this).text('Collapse Menu')
+                }
+                else{
+                    $(this).text('Show full menu')
+                }
+            });
+        });
+    </script>
+</body>
+</html>

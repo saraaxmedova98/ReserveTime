@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load custom-filters %}
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/reset.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/user-profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/company-profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/reserve-page.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+    <title>Company Profile</title>
+    <style>
+        @media (min-width: 992px){
+            .modal-lg, .modal-xl {
+                max-width: 60%;
+            }
+        }
+
+        .inner-container{
+            position: relative;
+            top: -45px;
+        }
+
+        .red{
+            color : red;
+        }
+
+        .black{
+            color:black;
+        }
+
+        .star i{
+            color : #da3743;
+        }
+        #complete-box-form{
+            display: none;
+        }
+    </style>
+    
+</head>
+
+
+<body id="profile-body">
+    
+    {% include 'partials/header.html' %}
+   
+    <section>
+        <div class="container custom-container">
+            <div class="row" style="position: relative;">
+                {% if request.user.is_authenticated %}
+                    <div class="save-restaurant-btn align-center" >
+                        {% if saved_restaurant.saved %}
+                            <i class="fas fa-bookmark pr-2 red" id="saved-icon"></i>
+                            <form method="POST" action="{% url 'core:company-profile' company.pk %}" id="saveRestaurantForm">
+                                {% csrf_token %}
+                                <input type="submit" id="save-restaurant-input" value="Restaurant saved!">
+                            </form>
+                        {% else %}    
+                            <i class="fas fa-bookmark pr-2 black" id="saved-icon"></i>
+                            <form method="POST" action="{% url 'core:company-profile' company.pk %}" id="saveRestaurantForm">
+                                {% csrf_token %}
+                                <input type="submit" id="save-restaurant-input" value="Save this restaurant">
+                            </form>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="row">
+                {% if company.cover_photo %}
+                    <img class="company-header-img" src="{{company.cover_photo.url}}" alt="">
+                {% else %}
+                    <img class="company-header-img" src="{% static 'images/cover.jpg' %}" alt="">
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <main>
+        <div class="container custom-container main-container" >
+            <div class="inner-container bg-white">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="row menu-box">
+                            <div class="menu">
+                                <ul class="menu-list">
+                                    <li><a href="#overview" id='link1'>Overview</a></li>
+                                    <li><a href="#link" id='link2'>Photos</a></li>
+                                    <li><a href="#3" id='link3'>Menu</a></li>
+                                    <li><a href="#4" id='link4'>Review</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="row overview d-column" id="overview" name = "link1">
+                            <h1 class="company-name bold">{{company.company_name}}</h1>
+                            <div style="display: none;" id="company_id">{{company.pk}}</div>
+                            <div class="d-flex pl-3">
+                                <div data-type="{{company_overall}}" class="stars rating-box d-flex">
+                                    <div class="star"><i class="far fa-star"></i></div>
+                                    <div class="star"><i class="far fa-star"></i></div>
+                                    <div class="star"><i class="far fa-star"></i></div>
+                                    <div class="star"><i class="far fa-star"></i></div>
+                                    <div class="star"><i class="far fa-star"></i></div>
+                                </div>
+                                <p class="review-text mr-4 ml-4"><i class="far fa-comment"></i> {{comments|length}} reviews</p>
+                                <p class="company-type">
+                                    <svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" style="background:#FFFFFF"><title>icon/ic_cuisine</title><desc>Created with Sketch.</desc><defs></defs><g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="icon/ic_cuisine"><g id="ic_cuisine"><rect id="boundary" x="0" y="0" width="24" height="24"></rect><path d="M14.55,2 C14.2462434,2 14,2.24624339 14,2.55 L14,21 C14,21.5522847 14.4477153,22 15,22 L16,22 C16.5522847,22 17,21.5522847 17,21 L17,17 L18,17 C19.1045695,17 20,16.1045695 20,15 L20,7.45 C20,4.44004811 17.5599519,2 14.55,2 L14.55,2 Z M18,15 L16,15 L16,4.32 C17.2176535,4.88673047 17.9973291,6.10692278 18,7.45 L18,15 Z" id="Shape" fill="#333333" fill-rule="nonzero"></path><path d="M11,2 L6,2 C4.8954305,2 4,2.8954305 4,4 L4,11 C4,12.1045695 4.8954305,13 6,13 L7,13 L7,21 C7,21.5522847 7.44771525,22 8,22 L9,22 C9.55228475,22 10,21.5522847 10,21 L10,13 L11,13 C12.1045695,13 13,12.1045695 13,11 L13,4 C13,2.8954305 12.1045695,2 11,2 Z M11,11 L6,11 L6,4 L7,4 L7,8.5 C7,8.77614237 7.22385763,9 7.5,9 C7.77614237,9 8,8.77614237 8,8.5 L8,4 L9,4 L9,8.5 C9,8.77614237 9.22385763,9 9.5,9 C9.77614237,9 10,8.77614237 10,8.5 L10,4 L11,4 L11,11 Z" id="Shape" fill="#333333" fill-rule="nonzero"></path></g></g></g></svg>
+                                    Global, International
+                                </p>
+                            </div>
+                            <p class="description p-3">
+                                {% if company.description %}
+                                    {{company.description}}
+                                {% endif %}
+                            </p>
+                        </div>
+    
+                        <div class="row go-to-reservation">
+                            <h3 class="full pl-3 pb-3 bottom-border bold" >Go To Reservation</h3>
+                            <p>If you find suitable table, you can pass to the reservation page. In this page you can choose foods and exact time for a meal.</p>
+                            <button data-toggle="modal" data-target="#menuListModal" id = "menu-link" class="go-reserve-btn" style="display: none; outline: none;"></button>
+                            <div id="not-found-message"></div>
+                            <div class="modal fade bd-example-modal-lg" id="menuListModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h3 class="full text-center bold">Choose your meal from {{company.company_name}}'s menu </h3>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="{% url 'core:company-profile' company.pk %}" method="POST" id="selectMenuForm">
+                                            {% csrf_token %}
+                                            <div class="choosen-menu-list mb-4">
+                                                <div class="col-lg-9">
+                                                    <div class="choosen-items-container shadow">
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="complete-reserve-box shadow" id="complete-box-form">  
+                                                        <div class="total-price-box mb-2" style="display: none;">
+                                                            <span>Total : $</span>
+                                                            <span class="total-price">34</span>
+                                                        </div>
+                                                        <input class="m-2 btn btn-success" type="submit" value="Complete Reserve">
+                                                        <!-- <a href="{ url 'core:payment'  }"></a> -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="menu-section pb-5 mb-4 bottom-border">
+                                                <div class="row menu-items">
+                                                    {% for menu in menus %}
+                                                        <div class="col-lg-6 position-relative">
+                                                            <div class="menu-item-choose"><i class="far fa-check-circle saved-item-icon"></i></i></div>
+                                                            <div class="menu-item menu-items-style">
+                                                                <div class="menu-item-header">
+                                                                    <span style="display: none;" class="menu-id">{{menu.pk}}</span>
+                                                                    <div class="menu-title menu-title-get"><span>{{menu.title}}</span></div>
+                                                                    <div class="menu-price menu-price-get"><span>{{menu.price}}</span></div>
+                                                                </div>
+                                                                
+                                                                <div class="menu-description">
+                                                                    <p>{{menu.description}}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="order-box">
+                            <h4 class="bottom-border bold pb-2 text-center">Order delivery or pickup</h4>
+                            <span class="bold">Pickup</span>
+                            <div class="phone-number d-flex mt-2">
+                                <i class="fas fa-phone-alt pr-2"></i> 
+                                {% if company.phone_number %}
+                                    <p>{{company.phone_number}}</p>
+                                {% else %} 
+                                    <p>xxx xxx xx xx</p>
+                                {% endif %}
+                                
+                            </div>
+                        </div>
+                       
+                        <div class="reserve-box">
+                            <h4 class="bottom-border bold pb-2 text-center">Make a reservation</h4>
+                            {% if inside_tables_sizes or outside_tables_sizes%}
+                                <form action="{% url 'core:company-profile' company.pk %}" method='POST' id = "FindTableForm" name="FindTableForm" class="reserve-form">
+                                    {% csrf_token %}
+                                    <label for="party-size" >Party Size</label>
+                                    <select id="party-size" name="size">
+                                        <optgroup label="Inside Tables">
+                                            {% for size in inside_tables_sizes %}
+                                                <option data-place='inside'  value="{{size}}">For {{size}}</option>
+                                            {% endfor %}
+                                        </optgroup>
+                                        <optgroup label="Outside Tables"> 
+                                            {% for size in outside_tables_sizes %}
+                                                <option data-place='outside' value="{{size}}">For {{size}}</option>
+                                            {% endfor %}
+                                        </optgroup>
+                                        
+                                    </select>
+                                    
+                                    <div class="d-flex mt-4 mb-4">
+                                        <div class='full'>
+                                            <label for="date">Date</label>
+                                            <input type="date" id="reserve-date" name="trip-start" value="{{reserve_start_date | date:'Y-m-d'}}" min="{{reserve_start_date | date:'Y-m-d'}}" max="{{reserve_finish_date}}">
+                                        </div>
+                                    </div>
+                                    <div class="d-flex mt-4 mb-4">
+                                        <div class='full'>
+                                            <label for="time">Time</label>
+                                            <select id="reserve-time" name="time">
+                                                {% for hour in work_hours %}
+                                                    <option value="{{hour | time:'H:i:s'}}">{{hour | time:'H:i'}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    {% if request.user.is_authenticated %}
+                                        <input type="submit" value="Find Table" class="find-table-btn">
+                                    {% else %}
+                                        <a href="{% url 'account:login' %}" class="find-table-btn" >Find Table</a>
+                                    {% endif %}
+                                </form>
+                            {% else %}
+                                <p class="text-center mt-3" style="color: red;">Company administration hasn't included any table yet. That is why, you can't reserve table online.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div id="2" class="row photos pb-3" name="link2" >
+                            <h3 class="full pl-3 pb-3 bottom-border">{{photos.count}} Photos</h3>
+                            <div class="menu-box full mb-3">
+                                <div class="photo-menu pl-3">
+                                    <ul class="menu-list">
+                                        <li><a href="#" data-type="all">All</a></li>
+                                        <li><a href="#" data-type="food">Food</a></li>
+                                        <li><a href="#" data-type="drink">Drink</a></li>
+                                        <li><a href="#" data-type="interior">Interier</a></li>
+                                        <li><a href="#" data-type="exterior">Exterier</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row photo-gallery row-cols-5 m-auto" >
+                                {% for photo in photos %}
+                                    <div class="col photo-box">
+                                        <a data-fancybox="gallery" href="{{photo.photo.url}}"><img data-type="{{photo.photo_type}}" src="{{photo.photo.url}}"></a>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="row menu-section" id="3" name = "link3">
+                            <div class="menu-container full mb-3 collapse-menu">
+                                <h3 class="full bottom-border pb-3 pl-3">Menu</h3>
+                                <div class="row">
+                                    {% for category in menu_categories %}
+                                        <div class="menu-section pl-4 pr-4 mb-4 bottom-border">
+                                            <div class="menu-section-header mb-4 text-center"><span>~{{category}}~</span></div>
+                                            <div class="row menu-items">
+                                                {% for menu in menus %}
+                                                {% if menu.menu_type == category %}
+                                                    <div class="col-6">
+                                                        <div class="menu-item">
+                                                            <div class="menu-item-header">
+                                                                <div class="menu-title"><span>{{menu.title|capfirst}} </span></div>
+                                                                <div class="menu-price"><span>${{menu.price}} </span></div>
+                                                            </div>
+                                                            <div class="menu-description">
+                                                                <p>{{menu.description}} </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <button type="button" class="m-auto show-menu-btn">Show full menu</button>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="row company-info-block">
+                            <h3 class="full pl-3 pb-3 bottom-border">Company Information</h3>
+                            <div class="col-6 d-flex">
+                                <div class="icon-block">
+                                    <svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" style="background:#FFFFFF"><title>icon/ic_cross_street</title><desc>Created with Sketch.</desc><defs></defs><g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="icon/ic_cross_street"><g id="ic_cross_street"><rect id="boundry" x="0" y="0" width="24" height="24"></rect><rect id="Rectangle-42" fill="#333333" x="9" y="3" width="2" height="5" rx="0.5"></rect><rect id="Rectangle-42" fill="#333333" x="9" y="16" width="2" height="5" rx="0.5"></rect><rect id="Rectangle-42" fill="#333333" x="14" y="3" width="2" height="3" rx="0.5"></rect><rect id="Rectangle-42" fill="#333333" x="14" y="8" width="2" height="3" rx="0.5"></rect><rect id="Rectangle-42" fill="#333333" x="14" y="13" width="2" height="3" rx="0.5"></rect><rect id="Rectangle-42" fill="#333333" x="14" y="18" width="2" height="3" rx="0.5"></rect><rect id="Rectangle-42" fill="#333333" x="19" y="3" width="2" height="18" rx="0.5"></rect><rect id="Rectangle-57" fill="#333333" x="3" y="6" width="7" height="2" rx="0.5"></rect><rect id="Rectangle-57" fill="#333333" x="8" y="11" width="3" height="2" rx="0.5"></rect><rect id="Rectangle-57" fill="#333333" x="3" y="11" width="3" height="2" rx="0.5"></rect><rect id="Rectangle-57" fill="#333333" x="3" y="16" width="7" height="2" rx="0.5"></rect></g></g></g></svg>
+                                </div>
+                                <div class="info-text">
+                                    <span>Cross street</span>
+                                    <p>{% if company.province_location %}{{company.province_location}}{% else %} .... {% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="col-6 d-flex">
+                                <div class="icon-block">
+                                    <i class="far fa-building"></i>
+                                </div>
+                                <div class="info-text">
+                                    <span>Neighborhood</span>
+                                    <p>Chelsea</p>
+                                </div>
+                            </div>
+                            <div class="col-6 d-flex">
+                                <div class="icon-block">
+                                    <i class="far fa-clock"></i>
+                                </div>
+                                <div class="info-text">
+                                    <span>Hours of operation</span>
+                                    <p>Mon–Sat {{company.work_hours_from}}-{{company.work_hours_to}} </p>
+                                </div>
+                            </div>
+                            <div class="col-6 d-flex">
+                                <div class="icon-block">
+                                    <svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" style="background:#FFFFFF">
+                                        <title>icon/ic_cuisine</title><desc>Created with Sketch.</desc><defs></defs>
+                                        <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="icon/ic_cuisine">
+                                        <g id="ic_cuisine"><rect id="boundary" x="0" y="0" width="24" height="24"></rect>
+                                        <path d="M14.55,2 C14.2462434,2 14,2.24624339 14,2.55 L14,21 C14,21.5522847 14.4477153,22 15,22 L16,22 C16.5522847,22 17,21.5522847 17,21 L17,17 L18,17 C19.1045695,17 20,16.1045695 20,15 L20,7.45 C20,4.44004811 17.5599519,2 14.55,2 L14.55,2 Z M18,15 L16,15 L16,4.32 C17.2176535,4.88673047 17.9973291,6.10692278 18,7.45 L18,15 Z" id="Shape" fill="#333333" fill-rule="nonzero"></path><path d="M11,2 L6,2 C4.8954305,2 4,2.8954305 4,4 L4,11 C4,12.1045695 4.8954305,13 6,13 L7,13 L7,21 C7,21.5522847 7.44771525,22 8,22 L9,22 C9.55228475,22 10,21.5522847 10,21 L10,13 L11,13 C12.1045695,13 13,12.1045695 13,11 L13,4 C13,2.8954305 12.1045695,2 11,2 Z M11,11 L6,11 L6,4 L7,4 L7,8.5 C7,8.77614237 7.22385763,9 7.5,9 C7.77614237,9 8,8.77614237 8,8.5 L8,4 L9,4 L9,8.5 C9,8.77614237 9.22385763,9 9.5,9 C9.77614237,9 10,8.77614237 10,8.5 L10,4 L11,4 L11,11 Z" id="Shape" fill="#333333" fill-rule="nonzero"></path></g></g></g></svg>
+                                </div>
+                                <div class="info-text">
+                                    <span>Cuisines</span>
+                                    <p>{% if company.cuisine %}{{company.cuisine}} {% else %} .... {% endif %} </p>
+                                </div>
+                            </div>
+                            <div class="col-6 d-flex">
+                                <div class="icon-block">
+                                    <i class="fas fa-pizza-slice"></i>
+                                </div>
+                                <div class="info-text">
+                                    <span>Dining Style</span>
+                                    <p>{% if company.dining_style %}{{company.dining_style}} {% else %} .... {% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="col-6 d-flex">
+                                <div class="icon-block">
+                                    <svg width="26px" height="26px" viewBox="0 0 24 24" version="1.1" style="background:#FFFFFF"><title>icon/ic_parking_details</title><desc>Created with Sketch.</desc><defs></defs><g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="icon/ic_parking_details"><rect id="boundry" x="0" y="0" width="24" height="24"></rect><circle id="Oval" stroke="#333333" stroke-width="2" cx="12" cy="12" r="8"></circle><rect id="Rectangle-3" fill="#333333" x="9" y="8" width="2" height="8" rx="1"></rect><rect id="Rectangle-3" fill="#333333" x="13" y="8" width="2" height="5" rx="1"></rect><path d="M10,8 L14,8 L14,9.5 L14,9.5 C14,9.77614237 13.7761424,10 13.5,10 L10.5,10 L10.5,10 C10.2238576,10 10,9.77614237 10,9.5 L10,8 Z" id="Rectangle-3" fill="#333333"></path><path d="M10.5,11 L13.5,11 L13.5,11 C13.7761424,11 14,11.2238576 14,11.5 L14,13 L10.5,13 L10.5,13 C10.2238576,13 10,12.7761424 10,12.5 L10,11.5 L10,11.5 C10,11.2238576 10.2238576,11 10.5,11 Z" id="Rectangle-3" fill="#333333"></path></g></g></svg>
+                                </div>
+                                <div class="info-text">
+                                    <span>Parking details</span>
+                                    <p>{% if company.parking_details %}{{company.parking_details}}{% else %} .... {% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="col-6 d-flex">
+                                <div class="icon-block">
+                                    <i class="fas fa-bus"></i>
+                                </div>
+                                <div class="info-text">
+                                    <span>Public transit</span>
+                                    <p>{% if company.public_transit %}{{company.public_transit}}{% else %} .... {% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="col-6 d-flex">
+                                <div class="icon-block">
+                                    <i class="far fa-credit-card"></i>
+                                </div>
+                                <div class="info-text">
+                                    <span>Payment options</span>
+                                    <p>{% if company.payment_options %}{{company.payment_options}}{% else %} .... {% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="col-6 d-flex">
+                                <div class="icon-block">
+                                    <svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" style="background: rgb(255, 255, 255);"><title>icon/ic_chef</title><desc>Created with Sketch.</desc><defs></defs><g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="icon/ic_chef" fill-rule="nonzero" fill="#333333"><g id="ic_chef" transform="translate(3.000000, 3.000000)"><g id="path0_stroke"><path d="M9,2 C10.74753,2 11.2909,2.52203 11.5663,2.90067 C11.7569,3.15266 11.8773,3.44336 12.0477,3.77663 C12.1995,4.07263 12.4802,4.60816 13.0528,4.89443 L13.9472,3.10557 C14.0198,3.14184 13.988,3.17737 13.8273,2.864 C13.6852,2.58789 13.4931,2.15984 13.1837,1.724328 C12.4591,0.72797 11.2525,0 9,0 L9,2 Z M13.0528,4.89443 C13.3931,5.05914 13.813,5.17853 14.1705,5.29042 C14.531,5.40297 14.8325,5.50244 15.1211,5.67628 C15.5714,5.93891 16,6.36421 16,7.5 L18,7.5 C18,5.63579 17.1786,4.56109 16.1289,3.94872 C15.6675,3.68506 15.1565,3.50328 14.767,3.38146 C14.3745,3.25897 14.1069,3.19086 13.9472,3.10557 L13.0528,4.89443 Z M16,7.5 C16,8.58594 15.4906,9.2061 14.8598,9.73178 C14.5267,10.01122 14.1517,10.26122 13.8286,10.52865 C13.5618,10.75096 13,11.2399 13,12 L15,12 C15,12.2601 14.8132,12.3115 15.1089,12.0651 C15.3483,11.8638 15.7233,11.6138 16.1402,11.2682 C17.0094,10.5439 18,9.41406 18,7.5 L16,7.5 Z M13.5793,16 L4.49999,16 L4.49999,18 L13.5793,18 L13.5793,16 Z M4.99999,12 C4.99999,11.2399 4.4382,10.75097 4.17142,10.52866 C3.84829,10.26122 3.47329,10.01122 3.14018,9.73178 C2.50937,9.20611 2,8.58594 2,7.5 L0,7.5 C0,9.41406 0.99061891,10.54389 1.859807,11.2682 C2.2767,11.6138 2.65169,11.8638 2.89105,12.0651 C3.18677,12.3115 2.99999,12.2601 2.99999,12 L4.99999,12 Z M2,7.5 C2,6.36421 2.42864,5.93891 2.87887,5.67628 C3.16747,5.50244 3.46898,5.40297 3.82952,5.29042 C4.18699,5.17853 4.6069,5.05914 4.94721,4.89443 L4.05279,3.10557 C3.8931,3.19086 3.62551,3.25897 3.23298,3.38146 C2.84352,3.50328 2.33253,3.68506 1.871129,3.94872 C0.821361,4.56109 0,5.63579 0,7.5 L2,7.5 Z M4.94721,4.89443 C5.51975,4.60816 5.80052,4.07263 5.95232,3.77663 C6.12265,3.44336 6.24309,3.15266 6.43374,2.90067 C6.70911,2.52203 7.25247,2 9,2 L9,0 C6.74753,0 5.54089,0.72797 4.81626,1.724328 C4.50691,2.15984 4.31485,2.58789 4.17268,2.864 C4.01198,3.17737 3.98025,3.14184 4.05279,3.10557 L4.94721,4.89443 Z M4.99999,16.5 L4.99999,13 L2.99999,13 L2.99999,16.5 L4.99999,16.5 Z M4.99999,13 L4.99999,12 L2.99999,12 L2.99999,13 L4.99999,13 Z M13,12 C13,12.5 13,12.75 13,12.875 C13,12.9375 13,12.9688 13,12.9844 C13,12.9922 13,12.9961 13,12.998 C13,12.999 13,12.9995 13,12.9998 C13,12.9999 13,12.9999 13,13 C13,13 13,13 13,13 C13,13 13,13 13,13 C13,13 13,13 13,13 C13,13 13,13 13,13 C13,13 14,13 14,13 C14,13 15,13 15,13 C15,13 15,13 15,13 C15,13 15,13 15,13 C15,13 15,13 15,13 C15,13 15,13 15,13 C15,12.9999 15,12.9999 15,12.9998 C15,12.9995 15,12.999 15,12.998 C15,12.9961 15,12.9922 15,12.9844 C15,12.9688 15,12.9375 15,12.875 C15,12.75 15,12.5 15,12 L13,12 Z M13.0002,13.0227 L13.0794,16.5113 L15.0789,16.466 L14.9997,12.9773 L13.0002,13.0227 Z M3.99999,14 L14,14 L14,12 L3.99999,12 L3.99999,14 Z M13.5793,18 C14.4211,18 15.098,17.3075 15.0789,16.466 L13.0794,16.5113 C13.0731,16.2308 13.2987,16 13.5793,16 L13.5793,18 Z M4.49999,16 C4.77613,16 4.99999,16.2239 4.99999,16.5 L2.99999,16.5 C2.99999,17.3284 3.67156,18 4.49999,18 L4.49999,16 Z"></path></g></g></g></g></svg>
+                                </div>
+                                <div class="info-text">
+                                    <span>Executive chef</span>
+                                    <p>{% if company.executive_chef %}{{company.executive_chef}}{% else %} .... {% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="col-6 d-flex">
+                                <div class="icon-block">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </div>
+                                <div class="info-text">
+                                    <span>Website</span>
+                                    <p><a target="blank" style="color: red; text-decoration: none;" href="{% if company.website %}{{company.website}}{% else %}#{% endif %}">{% if company.website %}{{company.website}}{% else %} .... {% endif %}</a></p>
+                                </div>
+                            </div>
+                            <div class="col-6 d-flex">
+                                <div class="icon-block">
+                                    <i class="fas fa-phone-alt pr-2"></i>
+                                </div>
+                                <div class="info-text">
+                                    <span>Phone number</span>
+                                    <p>{% if company.phone_number %}{{company.phone_number}}{% else %} .... {% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="col-6 d-flex">
+                                <div class="icon-block">
+                                    <i class="far fa-file-alt"></i>
+                                </div>
+                                <div class="info-text">
+                                    <span>Private party contact</span>
+                                    <p>{% if company.private_party_contact %}{{company.private_party_contact}}{% else %} .... {% endif %}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+               
+    
+                <div class="row comments-section" id="4" name='link4'>
+                    <h3 class="full bottom-border bold pl-5 pb-2 mt-5">What {{comments|length}} people are saying</h3>
+                    <div class="row mb-5">
+                        <div class="d-column pl-5">
+                            <span class="bold">Overall ratings and reviews</span>
+                            <p>Reviews can only be made by diners who have eaten at this restaurant</p>
+                            <span style="color: #6f737b;"><i class="far fa-thumbs-up mr-2"></i><small>{{liked_users_count|percentage:all_likes}} % of people would recommend it to a friend</small></span>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-3 mb-5">
+                        {% if liked_users_count or disliked_users_count %}
+                            <div class="col-12 m-auto col-sm-8 col-md-6 col-lg-4">
+                                <canvas id="likeChart"></canvas>
+                                <div class="full text-center">
+                                    <p>Based on {{liked_users_count|add:disliked_users_count}} recomendations</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if food_avg or service_avg or ambience_avg %}
+                            <div class="col-12 m-auto col-sm-8 col-md-6 col-lg-4">
+                                <canvas id="ratingChart"></canvas>
+                                <div class="d-flex justify-content-center mt-3">
+                                    <div class="d-column border-right pr-3 pl-3 align-items-center">
+                                        <strong>{{food_avg}}</strong>
+                                        <span>Food</span>
+                                    </div>
+                                    <div class="d-column border-right pr-3 pl-3 align-items-center">
+                                        <strong>{{service_avg}}</strong>
+                                        <span>Service</span>
+                                    </div>
+                                    <div class="d-column pr-3 pl-3 align-items-center">
+                                        <strong>{{ambience_avg}}</strong>
+                                        <span>Ambience</span>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div class="col-12 col-sm-8 col-md-8 m-auto col-lg-4">
+                                <canvas id="userRatingChart"></canvas>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                   
+
+                    <div class="comment-sort mb-5 mt-5">
+                        <strong>Sort by</strong><br>
+                        <div class="d-flex mt-3">
+                            <form id="commentFilter" class="sort-form">
+                                <select name="commentSort" class="form-control">
+                                    <option value="newest">Newest</option>
+                                    <option value="highest">Highest Raiting</option>
+                                    <option value="lowest">Lowest Raiting</option>
+                                </select>
+                            </form>
+                        </div>
+                    </div>
+                   
+                    <div class="comments-box" id="commentBox">
+                        {% for comment in comments %}
+                            <div class="comment-item row">
+                                <div class="col-md-3 comment-author">
+                                    <div class="comment-author-profile-img">{{comment.comment.user.first_name|capfirst|first}}{{comment.comment.user.last_name|capfirst|first}}</div>
+                                    <div class="username">{{comment.comment.user.username}}</div>
+                                    <div class="address">San Francisco</div>
+                                    <div class="user-comments-count">
+                                        <p class="review-text mr-4 ml-4"><i class="far fa-comment"></i> {% for user in users %}{% if user == comment.comment.user %}{{user.user_comment.all.count}}{% endif %}{% endfor %} reviews</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="d-flex">
+                                        <div data-type = '{{comment.overall}}'  class="stars d-flex rating-box">
+                                            <div class="star"><i class="far fa-star"></i></div>
+                                            <div class="star"><i class="far fa-star"></i></div>
+                                            <div class="star"><i class="far fa-star"></i></div>
+                                            <div class="star"><i class="far fa-star"></i></div>
+                                            <div class="star"><i class="far fa-star"></i></div>
+                                        </div>
+                                        <div class="posted-date pl-4">
+                                            <p>Dined on {{comment.comment.commented_at|date:"N d, Y"}}</p>
+                                        </div>
+                                    </div>
+
+                                    <style>
+                                        .rating-menu-list strong{
+                                            margin-right: 5px;
+                                        }
+                                        .rating-menu-list span{
+                                            color: red;
+                                            font-size: 15px;
+                                            font-weight: bold;
+                                        }
+                                    </style>
+
+                                    <div class="d-flex">
+                                        <ul class="d-flex rating-menu-list">
+                                            <li class="d-flex ml-2">
+                                                <strong>Overall</strong>
+                                                <span>{{comment.overall}}.</span>
+                                            </li>
+                                            <li class="d-flex ml-2">
+                                                <strong>Food</strong>
+                                                <span>{{comment.comment.ratingFood}}.</span>
+                                            </li>
+                                            <li class="d-flex ml-2">
+                                                <strong>Service</strong>
+                                                <span>{{comment.comment.ratingService}}.</span>
+                                            </li>
+                                            <li class="d-flex ml-2">
+                                                <strong>Ambience</strong>
+                                                <span>{{comment.comment.ratingAmbience}}.</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="post-body">
+                                        <p>{{comment.comment.text}}</p>
+                                        {% if comment.comment.comment_image %}
+                                            <div class="col-3 mb-2 photo-box">
+                                                <a data-fancybox="gallery" href="{{comment.comment.comment_image.url}}"><img style="width:100%;" src="{{comment.comment.comment_image.url}}"></a>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="formInfos" style="display: none;">
+            <div id="formTime"></div>
+            <div id="formDate"></div>
+            <div id="formTable"></div>
+        </div>
+    </main>
+
+    {% include 'partials/footer.html' %}
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+    <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/reserve-page.js' %}"></script>
+
+    
+
+    <script >
+        var ctx = document.getElementById("likeChart").getContext('2d');
+        let colorHex = ['#27AE60 ', '#F76C5E ']
+        let labels = ['Liked','Disliked']
+
+        var ctx_1 = new Chart(ctx, {
+            type: 'pie',
+
+            data: {
+                datasets: [{
+                    data: ['{{liked_users_count}}', '{{disliked_users_count}}'],
+                    backgroundColor: colorHex,
+                    hoverBackgroundColor: '#27AE60'
+                }],
+                labels : labels
+            },
+
+            options: {
+                responsive : true,
+                legend: {
+                    position: 'bottom',
+                }
+            }
+        });
+        
+        var ctx_2 = document.getElementById("ratingChart").getContext('2d');
+        let data = ['{{food_avg}}','{{service_avg}}','{{ambience_avg}}']
+
+        var data_2 = {
+            datasets: [{
+                data: data,
+                backgroundColor: [
+                    '#45B39D',
+                    '#9B59B6',
+                    '#BFC9CA',
+                ],
+            }],
+            labels: [
+                'Food',
+                'Service',
+                'Ambience'
+            ]
+        };
+        var myDoughnutChart_2 = new Chart(ctx_2, {
+            type: 'doughnut',
+            data: data_2,
+            options: {
+                responsive : true,
+                legend: {
+                    position: 'bottom',
+                }
+            }
+        });
+
+
+       
+        
+        let colorHex_3 = ['pink ', 'purple', 'yellow','red','blue']
+        var chartdata = {
+            type: 'horizontalBar',
+            data: {
+                labels: ["Point 5", "Point 4", "Point 3", "Point 2", "Point 1"],
+                // labels: month,
+                datasets: [
+                    {
+                        label: 'UserRating',
+                        backgroundColor: colorHex_3,
+                        data: ['{{overall_count_5}}','{{overall_count_4}}','{{overall_count_3}}','{{overall_count_2}}','{{overall_count_1}}']
+                    },
+                    
+                ],
+                
+            },
+            options: {
+                animation: {
+                    easing: "easeOutQuart"
+                },
+                legend: {
+                    position: "bottom",
+                    responsive : true
+                },
+                scales: {
+                    xAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                        }
+                    }]
+                }
+            }
+        }
+
+        var ctx_3 = document.getElementById('userRatingChart').getContext('2d');
+        new Chart(ctx_3, chartdata);
+     </script>
+
+    <script>
+
+        $(document).ready(function(){
+            $('.menu-item').click(function(){
+                var total_price = parseInt($('.total-price').text())
+                if (total_price == 0){
+                    $('#complete-box-form').hide()
+                }
+                else{
+                    $('#complete-box-form').css('display','flex')
+                }
+            })
+        })
+        
+        $('#FindTableForm').on('submit', function(e){
+            e.preventDefault()
+            
+            $.ajax({
+                type: "POST",
+                url: $('#FindTableForm').attr('action'),
+                data:  {
+                    size : $('#party-size').val(),
+                    table_place : $('#party-size option:selected').data('place'),
+                    date :  $('#reserve-date').val(),
+                    time : $('#reserve-time').val(),
+                    csrfmiddlewaretoken:$('#FindTableForm').find('input[name=csrfmiddlewaretoken]').val(),
+                    form_id : $('#FindTableForm').attr('id')
+                },
+                dataType: 'json',
+                success: function (data) {
+                    $('#message').html("<h2>Form posted</h2>")
+                    if (data.found_result){
+                        $('#menu-link').html(`${data.found_result.time}<i class="pl-2 fas fa-external-link-alt"></i>`).css({'display':'flex'})
+                        $('#not-found-message').html('')
+                    }else if(data.not_found){
+                        $('#not-found-message').html(`<p>${data.not_found}</p>`)
+                        $('#menu-link').css('display','none')
+                    }
+                    $('#formTime').text(data.found_result.time)
+                    $('#formDate').text(data.found_result.reserved_date)
+                    $('#formTable').text(data.found_result.table_id)
+                },
+                error: function(data) {
+                    alert("error");
+                    console.log(data);
+                }
+            });
+        });
+
+        $('#selectMenuForm').on('submit', function(e){
+            e.preventDefault()  
+            var menu_list = $('.choosen-items-container').children()
+            var total_menu_list = []
+            for (var i=0; i<menu_list.length; i++){
+                var menu = menu_list[i]
+                var menu_item = {
+                    'menu_id' : parseInt($(menu).find('.menu-id').text()),
+                    'portion_count' : parseInt($(menu).find('.porsion').text())
+                }
+                total_menu_list.push(menu_item)
+            }
+            console.log(total_menu_list);
+            $.ajax({
+                type: "POST",
+                url: $('#selectMenuForm').attr('action'),
+                data:  {
+                    length : total_menu_list.length,    
+                    selected_menus_list : total_menu_list,
+                    total_price : parseInt($('.total-price').text()),
+                    reserve_time : $('#formTime').text(),
+                    reserve_date : $('#formDate').text().split(' ')[0],
+                    table_id : parseInt($('#formTable').text()),
+                    csrfmiddlewaretoken:$('#selectMenuForm').find('input[name=csrfmiddlewaretoken]').val(),
+                    form_id : $('#selectMenuForm').attr('id')
+                },
+                dataType: 'json',
+                success: function (data) {
+                    $('#message-2').html("<h2>Form posted</h2>")
+                    console.log(data);
+                    window.location.replace("{% url 'core:payment' 5 %}".replace('5', data.reservation_id ));
+                },
+                error: function(data) {
+                    alert("error");
+                    console.log(data);
+                }
+            });
+        });
+
+        $('#saveRestaurantForm').on('submit', function(e){
+            e.preventDefault()  
+            
+            $.ajax({
+                type: "POST",
+                url: $('#saveRestaurantForm').attr('action'),
+                data:  {
+                    csrfmiddlewaretoken:$('#saveRestaurantForm').find('input[name=csrfmiddlewaretoken]').val(),
+                    form_id : $('#saveRestaurantForm').attr('id')
+                },
+                dataType: 'json',
+                success: function (data) {
+                    if(data.saved == 'true'){
+                        $('#saved-icon').css('color','red')
+                        console.log($('#save-restaurant-input').text());
+                        $('#save-restaurant-input').val(data.text)
+                    }else if( data.saved == 'false'){
+                        $('#saved-icon').css('color','black')
+                        $('#save-restaurant-input').val(data.text)
+                    }
+                    console.log(data);
+                },
+                error: function(data) {
+                    alert("error");
+                    console.log(data);
+                }
+            });
+        });
+
+       
+    </script>
+    <script>
+        function scrollToAnchor(aid){
+            var aTag = $("div[name='"+ aid +"']");
+            $('html,body').animate({scrollTop: aTag.offset().top},'slow');
+        }
+        function inlineLink(id){
+            $(`${id}`).click(function() {
+                if(id == '#link1'){
+                    scrollToAnchor('link1');
+                }
+                else if(id == '#link2'){
+                    scrollToAnchor('link2');
+                }
+                else if(id == '#link3'){
+                    scrollToAnchor('link3');
+                }
+                else if(id == '#link4'){
+                    scrollToAnchor('link4');
+                }
+            });
+        }
+        inlineLink('#link1')
+        inlineLink('#link2')
+        inlineLink('#link3')
+        inlineLink('#link4')
+
+        $(document).ready(function(){
+
+            function getRandomSize(min, max) {
+                return Math.round(Math.random() * (max - min) + min);
+            }
+
+            var allImages = "";
+            
+            for (var i = 0; i < '{{photos|length}}'; i++) {
+                var width = getRandomSize(200, 400);
+                var height =  getRandomSize(200, 400);
+                allImages += '<a data-fancybox="gallery" href="{{photo.photo.url}}"><img data-type="{{photo.photo_type}}" src="{{photo.photo.url}}"></a>';
+            }
+
+            // $('#photos').append(allImages);
+
+
+            var comments_box = $('.comments-box').find('.comment-author-profile-img')
+
+            function generateRandomColors(){
+                var clr_1 = Math.floor(Math.random()*256);
+                var clr_2 = Math.floor(Math.random()*256);
+                var clr_3 = Math.floor(Math.random()*256);
+
+                return `rgb(${clr_1},${clr_2},${clr_3})`;
+            }
+
+            for (var i=0; i<comments_box.length; i++){
+                $(comments_box[i]).css('background-color',`${generateRandomColors()}`)
+            }
+            
+
+           
+
+            $('.show-menu-btn').click(function(){
+                $('.menu-container').toggleClass('collapse-menu')
+                
+                if ($(this).text() == 'Show full menu') {
+                    $(this).text('Collapse Menu')
+                }
+                else{
+                    $(this).text('Show full menu')
+                }
+            });
+            
+            $('.photos').find('.col.photo-box').css('display','block')
+            $('.menu-list li a').click(function(e){
+                e.preventDefault()
+                $('.menu-list li').css('border-bottom','none')
+                $(this).parent('li').css('border-bottom','2px solid red')
+                $(this).parents('.photos').find('.col.photo-box').css('display','none')
+                for(var i=0;i<$(this).parents('.photos').find('.photo-box img').length;i++){
+                    if( $(this).data('type') == $(this).parents('.photos').find('.photo-box img').eq(i).data('type')){
+                    $(this).parents('.photos').find('.col.photo-box').eq(i).css('display','block')
+                
+                }
+                if( $(this).data('type') == 'all'){
+                        $(this).parents('.photos').find('.col.photo-box').css('display','block')
+                }   
+                }
+            })
+            
+            for(var index = 0; index < $('.rating-box').length; index++ ){
+                for(var i = 0; i< parseInt($('.rating-box').eq(index).data('type'));i++){
+                    $('.rating-box').eq(index).find('i').eq(i).removeClass('far').addClass('fas')
+                }
+            }
+          
+        });
+    </script>
+
+
+
+    <script>
+        document.querySelectorAll('form#commentFilter > select').forEach(select_element => {
+            select_element.addEventListener('change', ()=>{
+                console.log(select_element.value);
+                const filterData = $('#commentFilter').serialize();
+                console.log(filterData);
+                    $.ajax({
+                        url: `{% url 'core:comment-filter' company.pk %}?${filterData}`,
+                        // data : filterData,
+                        success: function(data){
+                            document.querySelector('#commentBox').innerHTML = data;
+                            console.log(data);
+                        },
+                        error: function(data){
+                            alert('error');
+                        }
+                    }).then(function(){
+                        var comments_box = $('.comments-box').find('.comment-author-profile-img')
+
+                        function generateRandomColors(){
+                            var clr_1 = Math.floor(Math.random()*256);
+                            var clr_2 = Math.floor(Math.random()*256);
+                            var clr_3 = Math.floor(Math.random()*256);
+
+                            return `rgb(${clr_1},${clr_2},${clr_3})`;
+                        }
+
+                        for (var i=0; i<comments_box.length; i++){
+                            $(comments_box[i]).css('background-color',`${generateRandomColors()}`)
+                        }
+                        
+                        for(var index = 0; index < $('.rating-box').length; index++ ){
+                            for(var i = 0; i< parseInt($('.rating-box').eq(index).data('type'));i++){
+                                $('.rating-box').eq(index).find('i').eq(i).removeClass('far').addClass('fas')
+                            }
+                        }
+
+                    });
+                    
+                    
+            })
+        })
+    </script>
+</body>
+</html>

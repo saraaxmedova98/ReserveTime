@@ -1,0 +1,73 @@
+<div class="menu-box-left" style="display: none;"></div>
+    <div class="menu-box-in pt-3" style="display: none;">
+        <div class="menu-box-in-body">
+            <div>
+                <ul class="admin-menu-list">
+                    <li>
+                        <a href="{% url 'core:company-profile' user.company.pk %}">
+                            <div class="d-flex">
+                                <i class="fas fa-home"></i>
+                                <span class="ml-2 bold">{{request.user.company.company_name}}</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'account:company-profile' user.company.pk %}">
+                            <div class="d-flex">
+                                <i class="fas fa-cog"></i>
+                                <span class="ml-2 bold">Company Settings</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'restaurant:photo' %}">
+                            <div class="d-flex">
+                                <i class="fas fa-images"></i>
+                                <span class="ml-2 bold">Photos</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'restaurant:menu' %}">
+                            <div class="d-flex">
+                                <i class="fas fa-hamburger"></i>
+                                <span class="ml-2 bold">Menus</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'restaurant:company-infos' user.company.pk %}">
+                            <div class="d-flex">
+                                <i class="fas fa-info-circle"></i>
+                                <span class="ml-2 bold">Informations</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'restaurant:company-tables' user.company.pk %}">
+                            <div class="d-flex">
+                                <i class="fas fa-table"></i>
+                                <span class="ml-2 bold">Tables</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'restaurant:company-reservations' user.company.pk %}">
+                            <div class="d-flex">
+                                <i class="fas fa-clock"></i>
+                                <span class="ml-2 bold">Reservations</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'restaurant:company-users' user.company.pk %}">
+                            <div class="d-flex">
+                                <i class="fas fa-users"></i>
+                                <span class="ml-2 bold">Users</span>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>

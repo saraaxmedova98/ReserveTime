@@ -1,0 +1,42 @@
+{% load static %}
+
+{% for company in companies %}
+    <a href="{% url 'core:company-profile' company.pk %}" class="full">
+        <div class="company-item row pt-3 pb-3 mb-5 bottom-border">
+            <div class="col-12 col-lg-4 company-profile-img">
+                <div class="img-box-container">
+                    {% if company.cover_photo %}
+                        <img src="{{company.cover_photo.url}}" alt="">
+                    {% else %}
+                        <img src="{% static 'images/img3.jpg' %}" alt="">
+                    {% endif %}
+                </div>   
+            </div>
+            <div class="col-12 col-lg-8">
+                <p class="name bold mb-2 pb-2">{{company.company_name}} </p>
+                <div class="review-box d-flex mb-2">
+                    <div data-type = '{{company.overall}}'  class="stars d-flex rating-box">
+                            <div class="star"><i class="far fa-star"></i></div>
+                            <div class="star"><i class="far fa-star"></i></div>
+                            <div class="star"><i class="far fa-star"></i></div>
+                            <div class="star"><i class="far fa-star"></i></div>
+                            <div class="star"><i class="far fa-star"></i></div>
+                    </div>
+                    <p class="review-text ml-2">{{company.company_comment.all.count}} reviews</p>
+                </div>
+                <div class="d-flex align-items-center mb-3">
+                    <p class="location bold">{{company.city_location}}, {{company.country_location}}</p>
+                </div>
+                <p class="description">
+                    {{company.description|slice:":255"}}...</p>
+                <div class="d-flex align-items-center">
+                    <span class="bold">TakeOut : </span>
+                    <div class="ml-3 phone-number d-flex mt-2">
+                        <i class="fas fa-phone-alt pr-2"></i> 
+                        <p>{{company.phone_number}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </a> 
+{% endfor %}

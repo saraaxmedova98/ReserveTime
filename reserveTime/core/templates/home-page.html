@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static custom_tags %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/reset.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+
+    
+
+    <title>Home Page</title>
+
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(pos) {
+                //You have your locaton here
+                console.log("Latitude: " + pos.coords.latitude +
+                    "Longitude: " + pos.coords.longitude);
+                });
+            } else {
+                console.log("Geolocation is not supported by this browser.");
+            }
+        }
+    </script>
+
+
+<style>
+    .star i {
+        color: #da3743;
+    }
+
+    /* .company-list-by-city .overlay-text{
+        width: fit-content;
+        padding: 20px;
+        background-color: rgba(0,0,0,.5);
+        border-radius: 50%;
+    } */
+
+
+</style>
+</head>
+<body>
+    
+    <header > 
+        <div class="custom-container container custom-container-mobile mt-4 shadow">
+            <div class="row justify-content-between">
+                <div class="left side">
+                    <a href="{% url 'core:home' %}">
+                        <img src="{% static 'images/logo.png' %}" width="200px" alt="">
+                    </a>
+                </div>
+                <div class="right side">
+                    
+                    {% if request.user.is_authenticated %}
+                        <div class="user-profile">
+                            <button type="button" class="header-btn"> 
+                                <i class="far fa-user"></i>
+                            </button>
+                            <div class="custom-drop-down shadow box1" style="display: none;">
+                                <div class="triangle"></div>
+                                <span>Hello, {{request.user.first_name|capfirst}}</span>
+                                <ul>
+                                    {% if request.user.is_company %}
+                                        <li><a href="{% url 'core:company-profile' user.company.pk %}">
+                                            <i class="fas fa-home mr-2"></i>
+                                            {{request.user.company.company_name}}</a></li>
+                                        <li><a href="{% url 'account:company-profile' user.pk %}">
+                                            <i class="fas fa-cog mr-2"></i>
+                                            Company Settings</a></li>
+                                        <li><a href="{% url 'account:user-profile' user.pk %}">
+                                            <i class="far fa-user-circle mr-2"></i>
+                                            My Profile</a></li>
+                                    {% else %}
+                                        <li><a href="{% url 'account:user-profile' user.pk %}">
+                                            <i class="far fa-user-circle mr-2"></i>
+                                            My Profile</a></li>
+                                    {% endif %}
+                                    <li><a href="{% url 'account:user-profile' user.pk %}">
+                                        <i class="fas fa-history mr-2"></i>
+                                        My Dining History</a></li>
+                                    <li><a href="{% url 'core:user-saved-restaurants' user.pk %}">
+                                        <i class="fas fa-bookmark mr-2"></i>
+                                        My Saved Restaurants</a></li>
+                                    <li><a href="{% url 'account:logout' %} " style="color: red;">
+                                        <i class="fas fa-sign-out-alt mr-2"  style="color: red;"></i>
+                                        Sign out</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        {% reservation request.user as reservations%}
+                        <div class="reserve-table">
+                            <button type="button" class="header-btn"><i class="far fa-calendar"></i></button>
+                            <div class="custom-drop-down p-3 box2 scroll-y" style="display: none;">
+                                <div class="triangle"></div>
+                                <span class="pb-2">Upcoming reservations</span>
+                                {% if reservations %}
+                                    {% for reservation in reservations %}
+                                        <div class="card mb-3" style="max-width: 540px;">
+                                            <div class="row no-gutters">
+                                            <div class="col-md-4">
+                                                {% if reservation.company.cover_photo %}
+                                                    <img src="{{reservation.company.cover_photo.url}}" class="card-img" style="width: 100px;height: 100px; object-fit: cover;">
+                                                {% else %}
+                                                    <img src="{% static 'images/img3.jpg' %}" class="card-img" style="width: 100px;height: 100px; object-fit: cover;">
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">{{reservation.company.company_name}}</h5>
+                                                    <p class="card-text">{{reservation.reserved_date}}, {{reservation.reserved_time}}</p>
+                                                    <p class="card-text"><small class="text-muted">{{reservation.company.city_location}}, {{reservation.company.province_location}}</small></p>
+                                                </div>
+                                            </div>
+                                            </div>
+                                        </div>
+                                        
+                                    {% endfor %}
+                                {% else %}
+                                    <p class="pl-2 pr-2">You have no upcoming reservations</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="notification">
+                            <button type="button" class="header-btn notification-btn">
+                                {% if notifications %}
+                                    <span class="notification-count"></span>
+                                {% endif %}
+                                <i class="far fa-bell"></i>
+                            </button>
+                            <div class="custom-drop-down box3 scroll-y p-3" style="display: none;">
+                                <div class="triangle"></div>
+                                <span>Notifications</span>
+                                {% if notifications %}
+                                    {% for notification in notifications %}
+                                        {% if notification.notification_type == 'new_reservation' %}
+                                            <a class="pl-2 pr-2" href="{% url 'restaurant:company-reservations' user.company.pk %}">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="far fa-clock mr-3"></i>
+                                                    <div class="d-column">
+                                                        {{notification.text}}
+                                                        <small>From {{notification.sender.email}}</small>   
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        {% elif notification.notification_type == 'accept_reservation' %}
+                                            <a class="pl-2 pr-2 mb-2 d-column" href="{% url 'account:user-profile' request.user.pk %}">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="far fa-calendar-check mr-3"></i>
+                                                    <div class="d-column">
+                                                        {{notification.text}}
+                                                        <small>By {{notification.sender.company.company_name}}</small>   
+                                                    </div>
+                                                </div>
+                                                
+                                            </a>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    <form  class="full mt-2 mb-2" id="readNotifications" action="{% url 'core:read-notifications' %}" method="POST">
+                                        {% csrf_token %}
+                                        <input type="submit" class="btn btn-outline-secondary float-r" value="Mark all as read!">
+                                    </form>
+                                {% else %}
+                                    <img src="{% static 'images/animat-bell-color.gif' %}" width="50%" class="m-auto" alt="">
+                                    <p class="pl-2 pr-2 bold text-center">Nothing to see here, you’re all caught up!</p>
+                                {% endif %}
+                                
+                            </div>
+                        </div>
+                    {% else %}
+                        <button type="button" class="btn register-btn mr-2" data-toggle="modal" data-target="#exampleModal">Sign Up</button>
+                        <a href="{% url 'account:login' %}" class="btn login-btn bold">Sign In</a>
+                    {% endif %}
+                    
+                    
+                </div>
+            </div>
+            <div class="row" style="position: relative;">
+                <style>
+                    .cover-name{
+                        color: #fff;
+                        font-size: 55px;
+                        padding: 20px;
+                        border-radius: 20px;
+                    }
+                </style>
+                <div class="overlay" style="background: radial-gradient(ellipse at center,rgba(0,0,0,.1) 0,transparent 100%) rgba(0,0,0,.3);">
+                    <div class="overlay-text">
+                        <h1 class="bold cover-name">Find Your Table for Any Occasion</h1>
+                    </div>
+                </div>
+                <img src="{% static 'images/img_slider_01.jpg' %}" class="header-img" alt="">
+            </div>
+        </div>
+    </header>
+  
+    <section>
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Sign Up</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body d-column">
+                    <a href="{% url 'account:user-register' %}" class="btn register-btn mb-2">Sign Up for User</a>
+                    <a href="{% url 'restaurant:company-regsiter' %}" class="btn register-btn">Sign Up for Company</a>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+            </div>
+        </div>
+    </section>
+
+    
+
+    <main>
+        <div class="custom-container container main-container shadow">
+            <div class="inner-container">
+                <div class="row pt-3 pb-3 bottom-border">
+                    <div class="location d-flex">
+                        <span>It looks like you're in Baku. Not correct?</span>
+                        <button onclick="getLocation()" style="color: #da3743; outline: none;"><i class="fas fa-location-arrow mr-2 ml-2"></i>Get current location</button>
+                    </div>
+                </div>
+                <div class="row mt-3" style="margin-bottom: 50px;">
+                    <h3 class="full bold bottom-border pb-3 padding-mobile">Newest Restaurants</h3>
+                    <div class="card-list d-flex">
+                        {% for company in companies %}
+                            <div class="col-12 col-lg-4 col-xl-3 col-sm-6 card-box">
+                                <div class="card">
+                                    <a href="{% url 'core:company-profile' company.company.pk %}">
+                                        <div class="card-img">
+                                            {% if company.company.cover_photo %}
+                                                <img src="{{company.company.cover_photo.url}}" class="card-img-self" alt="Restauran image" >
+                                            {% else %}
+                                                <img src="{% static 'images/img3.jpg' %}" class="card-img-self" alt="Restauran image" >
+                                            {% endif %}
+                                            
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="name">{{company.company.company_name}}</p>
+                                            <div class="review-box d-flex">
+                                                <div data-type="{{company.company_overall}}" class="stars rating-box d-flex">
+                                                    <div class="star"><i class="far fa-star"></i></div>
+                                                    <div class="star"><i class="far fa-star"></i></div>
+                                                    <div class="star"><i class="far fa-star"></i></div>
+                                                    <div class="star"><i class="far fa-star"></i></div>
+                                                    <div class="star"><i class="far fa-star"></i></div>
+                                                </div>
+                                                <p class="review-text ml-2">{{company.company.company_comment.all|length}} reviews</p>
+                                            </div>
+                                            <p class="location">{{company.company.city_location}}, {{company.company.province_location|truncatechars:14}}</p>
+                                            <span class="booking-count">
+                                                <span>
+                                                    <svg width = 20 viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M15.5,5 C15.2239,5 15,5.223846 15,5.5 L15,6.5 C15,6.77615 15.2239,7 15.5,7 L17.5858,7 L14,10.58578 L12.70711,9.29291 L12.35355,8.93933 C12.15829,8.74408 11.84171,8.74408 11.64645,8.93933 L11.29289,9.29291 L5,15.5858 L5,7 L11.5,7 C11.77614,7 12,6.77615 12,6.5 L12,5.5 C12,5.22385 11.77614,5 11.5,5 L5,5 C3.89543,5 3,5.89542 3,7 L3,17 C3,18.1046 3.89543,19 5,19 L19,19 C20.1046,19 21,18.1046 21,17 L21,14.5 C21,14.2238 20.7761,14 20.5,14 L19.5,14 C19.2239,14 19,14.2238 19,14.5 L19,17 L6.4142,17 L12,11.41422 L13.2929,12.70709 L13.6464,13.06067 C13.8417,13.25592 14.1583,13.25592 14.3536,13.06067 L14.7071,12.70709 L19,8.41422 L19,10.5 C19,10.77615 19.2239,11 19.5,11 L20.5,11 C20.7761,11 21,10.77615 21,10.5 L21,6 L21,5.5 C21,5.223846 20.7761,5 20.5,5 L20,5 L15.5,5 Z" fill="#2D333F" fill-rule="nonzero"></path></g></svg>
+                                                </span>
+                                                <span>Booked {{company.reservation_count}} times today</span>
+                                            </span>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="row mt-3" style="margin-bottom: 50px;">
+                    <div  class="full bottom-border pb-3 padding-mobile d-flex justify-content-between">
+                        <h3 class="bold m-0">All Restaurants</h3>
+                        <button type="button" class="mr-2" style="color: red; outline: none;" id="view_all_companies">View all</button>
+                    </div>
+                    
+                    <div class="card-list d-flex" id="all_companies_list">
+                        {% for company in all_companies %}
+                            <div class="col-12 col-lg-4 col-xl-3 col-sm-6 card-box">
+                                <div class="card">
+                                    <a href="{% url 'core:company-profile' company.company.pk %}">
+                                        <div class="card-img">
+                                            {% if company.company.cover_photo %}
+                                                <img src="{{company.company.cover_photo.url}}" class="card-img-self" alt="Restauran image" >
+                                            {% else %}
+                                                <img src="{% static 'images/img3.jpg' %}" class="card-img-self" alt="Restauran image" >
+                                            {% endif %}
+                                            
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="name">{{company.company.company_name}}</p>
+                                            <div class="review-box d-flex">
+                                                <div data-type="{{company.company_overall}}" class="stars rating-box d-flex">
+                                                    <div class="star"><i class="far fa-star"></i></div>
+                                                    <div class="star"><i class="far fa-star"></i></div>
+                                                    <div class="star"><i class="far fa-star"></i></div>
+                                                    <div class="star"><i class="far fa-star"></i></div>
+                                                    <div class="star"><i class="far fa-star"></i></div>
+                                                </div>
+                                                <p class="review-text ml-2">{{company.company.company_comment.all|length}} reviews</p>
+                                            </div>
+                                            <p class="location">{{company.company.city_location}}, {{company.company.province_location|truncatechars:14}}</p>
+                                            <span class="booking-count">
+                                                <span>
+                                                    <svg width = 20 viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M15.5,5 C15.2239,5 15,5.223846 15,5.5 L15,6.5 C15,6.77615 15.2239,7 15.5,7 L17.5858,7 L14,10.58578 L12.70711,9.29291 L12.35355,8.93933 C12.15829,8.74408 11.84171,8.74408 11.64645,8.93933 L11.29289,9.29291 L5,15.5858 L5,7 L11.5,7 C11.77614,7 12,6.77615 12,6.5 L12,5.5 C12,5.22385 11.77614,5 11.5,5 L5,5 C3.89543,5 3,5.89542 3,7 L3,17 C3,18.1046 3.89543,19 5,19 L19,19 C20.1046,19 21,18.1046 21,17 L21,14.5 C21,14.2238 20.7761,14 20.5,14 L19.5,14 C19.2239,14 19,14.2238 19,14.5 L19,17 L6.4142,17 L12,11.41422 L13.2929,12.70709 L13.6464,13.06067 C13.8417,13.25592 14.1583,13.25592 14.3536,13.06067 L14.7071,12.70709 L19,8.41422 L19,10.5 C19,10.77615 19.2239,11 19.5,11 L20.5,11 C20.7761,11 21,10.77615 21,10.5 L21,6 L21,5.5 C21,5.223846 20.7761,5 20.5,5 L20,5 L15.5,5 Z" fill="#2D333F" fill-rule="nonzero"></path></g></svg>
+                                                </span>
+                                                <span>Booked {{company.reservation_count}} times today</span>
+                                            </span>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom: 50px;">
+                    <h3 class='padding-mobile bold bottom-border full pb-3'>Top Cuisines</h3>
+                    <div id="custom-carousel"  class="owl-carousel owl-theme card-list">
+                        {% for cuisine in cuisines %}
+                            <div class="item">
+                                <a href="{% url 'core:company-cuisine' cuisine.title %}" style="width: 100%;" >
+                                    <div class="inner p-relative">
+                                        <div class="overlay">
+                                            <div class="overlay-text">
+                                                <span>Best {{cuisine.title}}  Restaurants Around You</span>
+                                            </div>
+                                        </div>
+                                        {% if cuisine.image %}
+                                        <img src="{{cuisine.image.url}}" alt="Owl Image">
+                                        {% else %}
+                                        <img src="{% static 'images/city1.jpg' %}" alt="Owl Image">
+                                        {% endif %}
+                                    </div>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+    
+                <div class="row flex-column pb-5">
+                    <h3 class="bold mb-3 pb-3 bottom-border padding-mobile">Featured Areas</h3>
+                    <div class="row card-list company-list-by-city" >
+                        {% for company in company_groups %}
+                            <div class="col-4 city-category-items mb-3">
+                                <a href="{% url 'core:city-categories' company.city_location %}">
+                                    <div class="inner p-relative">
+                                        <div class="overlay">
+                                            <div class="overlay-text">
+                                                <p class="mb-1">{{company.city_location}}</p>
+                                                <span>{% if company.count == 1 %}{{company.count}} restaurant {% else %}{{company.count}} restaurants{% endif %}</span>
+                                            </div>
+                                        </div>
+                                        <img src="{% static 'images/city2.jpg' %}" data-city="{{company.city_location}}" alt="{{company.city_location}} Image">
+                                    </div>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>    
+                </div>
+    
+                
+            </div>
+        </div>
+    </main>
+
+    {% include 'partials/footer.html' %}
+
+    <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+
+    <script>
+        for(var i=4; i<$('#all_companies_list').children().length; i++){
+            $($('#all_companies_list').children()[i]).css('display','none')
+        }
+        $('#view_all_companies').click(function(){
+            var i=0
+            var interval = setInterval(() => {
+                $($('#all_companies_list').children()[i]).fadeIn()
+                i++ 
+                if (i==$('#all_companies_list').children().length){
+                    clearInterval(interval)
+                }
+            }, 300);
+        })
+    </script>
+
+    <script>
+         var city_photos = [
+                {
+                    city : 'Baku',
+                    src : "{% static 'images/baku-photo.jpg' %}"
+                },
+                {
+                    city : 'Las Vegas',
+                    src : "{% static 'images/las-vegas.jpg' %}"
+                },
+                {
+                    city : 'London',
+                    src : "{% static 'images/london.jpg' %}"
+                },
+                {
+                    city : 'Miami',
+                    src : "{% static 'images/miami-2.jpg' %}"
+                },
+                {
+                    city : 'New York',
+                    src : "{% static 'images/new-york.jpg' %}"
+                },
+                {
+                    city : 'San Francisco',
+                    src : "{% static 'images/san-francisco.jpeg' %}"
+                },
+                
+            ]
+            
+            for (var i=0; i<$('.company-list-by-city').find('img').length; i++){
+                var img = $('.company-list-by-city').find('img')[i]
+                var img_city = $($('.company-list-by-city').find('img')[i]).data('city')
+                for(var j=0; j<city_photos.length; j++){
+                    if (img_city == city_photos[i].city){
+                        $(img).attr('src',city_photos[i].src)
+                    }
+                }
+            }
+    </script>
+    
+    <script>
+        $('#readNotifications').on('submit', function(e){
+            e.preventDefault()  
+            
+            $.ajax({
+                type: "POST",
+                url: $('#readNotifications').attr('action'),
+                data:  {
+                    csrfmiddlewaretoken:$('#readNotifications').find('input[name=csrfmiddlewaretoken]').val(),
+                    form_id : $('#readNotifications').attr('id')
+                },
+                dataType: 'json',
+                success: function (data) {
+                    window.location.replace("{% url 'core:home' %}");
+                    console.log(data);
+                },
+                error: function(data) {
+                    alert("error");
+                    console.log(data);
+                }
+            });
+        });
+
+        for(var index = 0; index < $('.rating-box').length; index++ ){
+                for(var i = 0; i< parseInt($('.rating-box').eq(index).data('type'));i++){
+                    $('.rating-box').eq(index).find('i').eq(i).removeClass('far').addClass('fas')
+                }
+            }
+    </script>
+
+   
+</body>
+</html>

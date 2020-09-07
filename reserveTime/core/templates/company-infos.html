@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/reset.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/user-profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/company-profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+    <title>Company Informations</title>
+
+    
+
+</head>
+<body id="company-admin-body">
+    
+    {% include 'partials/company-header.html' %}
+    {% include 'partials/mobile-menu.html' %}
+    
+    <main>
+        <div class="full">
+            <div class="row justify-content-center">
+                <div class="col-3 col-lg-2 bg-white p-0 admin-menu-col header-shadow">
+                    <div class="admin-menu-box mt-5">
+                        <nav>
+                            <ul class="admin-menu-list">
+                                <li>
+                                    <a href="{% url 'core:company-profile' user.company.pk %}">
+                                        <div class="d-flex">
+                                            <i class="fas fa-home"></i>
+                                            <span class="ml-2 bold">{{request.user.company.company_name}}</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'account:company-profile' user.company.pk %}">
+                                        <div class="d-flex">
+                                            <i class="fas fa-cogs"></i>
+                                            <span class="ml-2 bold">Company Settings</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'restaurant:photo' %}">
+                                        <div class="d-flex">
+                                            <i class="fas fa-images"></i>
+                                            <span class="ml-2 bold">Photos</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'restaurant:menu' %}">
+                                        <div class="d-flex">
+                                            <i class="fas fa-hamburger"></i>
+                                            <span class="ml-2 bold">Menus</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'restaurant:company-infos' user.company.pk %}">
+                                        <div class="d-flex">
+                                            <i class="fas fa-info-circle"></i>
+                                            <span class="ml-2 bold">Informations</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'restaurant:company-tables' user.company.pk %}">
+                                        <div class="d-flex">
+                                            <i class="fas fa-table"></i>
+                                            <span class="ml-2 bold">Tables</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'restaurant:company-reservations' user.company.pk %}">
+                                        <div class="d-flex">
+                                            <i class="fas fa-clock"></i>
+                                            <span class="ml-2 bold">Reservations</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'restaurant:company-users' user.company.pk %}">
+                                        <div class="d-flex">
+                                            <i class="fas fa-users"></i>
+                                            <span class="ml-2 bold">Users</span>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <div class="col-9 col-lg-10">
+                    <div class="container mt-4 bg-white mb-3 main-container header-shadow p-3">
+                        <div class="row">
+                            <h3 class="full bottom-border bold pb-3 mb-5">
+                                Company Informations
+                            </h3>
+                            <p class="bold">These fields will help users to get basic informations about restaurant, that is why it is recomended to fill all fields correctly.</p>
+                            <form method = "POST"  class="full mt-3 mb-3 company-infos-form" enctype="multipart/form-data">
+                                {% csrf_token %}
+                               <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="formGroupExampleInput">Restaurant Name</label>
+                                            {{form.company_name}}
+                                            {{form.company_name.errors}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="formGroupExampleInput">Phone Number</label>
+                                            {{form.phone_number}}
+                                            {{form.phone_number.errors}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="formGroupExampleInput">Restaurant Country</label>
+                                            {{form.country_location}}
+                                            {{form.country_location.errors}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="formGroupExampleInput">Restaurant City</label>
+                                            {{form.city_location}}
+                                            {{form.city_location.errors}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="formGroupExampleInput">Restaurant Street/Province</label>
+                                            {{form.province_location}}
+                                            {{form.province_location.errors}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="formGroupExampleInput">Work Start Hour</label>
+                                            {{form.work_hours_from}}
+                                            {{form.work_hours_from.errors}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="formGroupExampleInput">Work Finish Hour</label>
+                                            {{form.work_hours_to}}
+                                            {{form.work_hours_to.errors}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="formGroupExampleInput">Cuisines</label>
+                                            {{form.cuisine}}
+                                            {{form.cuisine.errors}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="formGroupExampleInput">Dining Style</label>
+                                            {{form.dining_style}}
+                                            {{form.dining_style.errors}}
+                                        </div>
+                                    </div>
+            
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="formGroupExampleInput">Payment options</label>
+                                            {{form.payment_options}}
+                                            {{form.payment_options.errors}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="formGroupExampleInput">Executive chef</label>
+                                            {{form.executive_chef}}
+                                            {{form.executive_chef.errors}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="formGroupExampleInput">Website</label>
+                                            {{form.website}}
+                                            {{form.website.errors}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label for="formGroupExampleInput">Private party contact</label>
+                                            {{form.private_party_contact}}
+                                            {{form.private_party_contact.errors}}
+                                        </div>
+                                    </div>
+                                    
+                               </div>
+                               <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="formGroupExampleInput">Parking details</label>
+                                            {{form.parking_details}}
+                                            {{form.parking_details.errors}}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="formGroupExampleInput">Public transit</label>
+                                            {{form.public_transit}}
+                                            {{form.public_transit.errors}}
+                                        </div>
+                                    </div>
+                               </div>
+                               <div class="row">
+                                   <div class="col">
+                                        <div class="form-group">
+                                            <label for="exampleFormControlTextarea1">Description</label>
+                                            {{form.description}}
+                                            {{form.description.errors}}
+                                        </div>
+                                   </div>
+                               </div>
+                               <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="exampleFormControlTextarea1">Cover Photo</label>
+                                            {{form.cover_photo}}
+                                            {{form.cover_photo.errors}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="submit" value="Save" class="save-btn float-r ">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>
+        $(document).ready(function(){
+            
+
+            $('.link-box').hover(function(){
+                height = $(this).height()
+                $(this).stop().animate({
+                    borderRadius : '50%',
+                    width : height
+                    })
+            }, function(){
+                $(this).animate({
+                    borderRadius : '10px',
+                    width : '250px'
+                    })
+            })
+        });
+    </script>
+</body>
+</html>

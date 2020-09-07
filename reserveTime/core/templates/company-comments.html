@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/reset.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/user-profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/company-profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+    <title>Company List</title>
+
+
+</head>
+<body id="company-admin-body">
+    
+    {% include 'partials/company-header.html' %}
+    {% include 'partials/mobile-menu.html' %}
+    
+    <main>
+        <div class="container mt-3 company-admin-container">
+            <div class="row">
+                <h3 class="full bottom-border bold pb-3 mb-5">All Comments To Your Company</h3>
+                <div class="row">
+                    <h3 class="full bottom-border pb-3 pl-3">What 6016 people are saying</h3>
+                    <div class="comment-sort">
+                        <span>Sort By</span>
+                    </div>
+                    <!-- <div class="comment-filter">
+                        <span>Filters</span>
+                    </div> -->
+                    <div class="comments-box inner-container">
+                        {% for comment in comments %}
+                            <div class="comment-item row">
+                                <div class="col-3 comment-author">
+                                    <div class="comment-author-profile-img">{{comment.user.first_name|capfirst|first}}{{comment.user.last_name|capfirst|first}}</div>
+                                    <div class="comment-author-username">{{comment.user}}</div>
+                                    <div class="comment-author-address">San Francisco</div>
+                                    <div class="user-comments-count">
+                                        <p class="review-text mr-4 ml-4"><i class="far fa-comment"></i> 4 reviews</p>
+                                    </div>
+                                </div>
+                                <div class="col-9">
+                                    <div class="d-flex">
+                                        <div data-type = '{{comment.raiting}}'  class="stars d-flex rating-box">
+                                            <div class="star"><i class="far fa-star"></i></div>
+                                            <div class="star"><i class="far fa-star"></i></div>
+                                            <div class="star"><i class="far fa-star"></i></div>
+                                            <div class="star"><i class="far fa-star"></i></div>
+                                            <div class="star"><i class="far fa-star"></i></div>
+                                        </div>
+                                        <div class="posted-date pl-4">
+                                            <p>Dined on {{comment.commented_at|date:"N d, Y"}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="post-body">
+                                        <p>{{comment.text}}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>
+        $(document).ready(function(){
+            $('.header-btn').click(function(){
+                // $('.custom-drop-down').hide()
+                $(this).siblings('.custom-drop-down').slideToggle()
+            });
+
+            $('.link-box').hover(function(){
+                height = $(this).height()
+                $(this).stop().animate({
+                    borderRadius : '50%',
+                    width : height
+                    })
+            }, function(){
+                $(this).animate({
+                    borderRadius : '10px',
+                    width : '250px'
+                    })
+            })
+            for(var index = 0; index < $('.rating-box').length; index++ ){
+                for(var i = 0; i< parseInt($('.rating-box').eq(index).data('type'));i++){
+                    $('.rating-box').eq(index).find('i').eq(i).removeClass('far').addClass('fas')
+            }
+            }
+        });
+    </script>
+</body>
+</html>

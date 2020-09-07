@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+{% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/reset.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/user-profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/company-profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+    <title>Company List</title>
+
+    <style>
+        .star i{
+            color: #da3743;
+        }
+        .company-item .name {
+            font-size: 25px;
+        }
+        .img-box-container{
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        .company-profile-img img:hover{
+            transform: scale(1.3, 1.3);
+            -ms-transform: scale(1.3, 1.3);
+            -webkit-transform: scale(1.3, 1.3);
+        }
+    </style>
+</head>
+<body id="profile-body">
+    
+    {% include 'partials/header.html' %}
+
+    <main class="pt-5 mb-5">
+        <div class="container main-container">
+            <h1 class="company-name bold text-center">Restaurants in {% for company in companies %}{% ifchanged company.city_location %}{{company.city_location}} {% endifchanged %}{% endfor %} - {% if companies.all.count == 1 or companies.all.count == 0 %}{{companies.all.count}} restaurant {% else %} {{companies.all.count}} restaurants {% endif %} </h1>
+            <div class="row company-list">
+                <div class="search-sort-box d-flex full justify-content-between">
+                    <div class="sidebar-box pt-2 pl-2 ftco-animate">
+                        <form action="#" method='GET' class="search-form">
+                            <div class="form-group">
+                                <input type='text' name='q' class='form-control' placeholder='Search' />
+                                <button type="submit" class="icon icon-search"><i class="fas fa-search"></i></button>
+                            </div>
+                        </form> 
+                    </div>
+                    <div class="company-sort d-flex align-items-center mr-2">
+                        <div class="d-flex">
+                            <form id="companyFilter" class="company-sort-form" style="width: 350px;">
+                                <select name="companySort" class="form-control">
+                                    <option value="newest">Newest</option>
+                                    <option value="highest">Highest Raiting</option>
+                                    <option value="lowest">Lowest Raiting</option>
+                                </select>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="companiesBox full" id="company-Box">
+                    {% for company in companies %}
+                        <a href="{% url 'core:company-profile' company.pk %}" class='full'>
+                            <div class="company-item row pt-3 pb-3 mb-5 bottom-border">
+                                <div class="col-12 col-lg-4 company-profile-img">
+                                    <div class="img-box-container">
+                                        {% if company.cover_photo %}
+                                            <img src="{{company.cover_photo.url}}" alt="">
+                                        {% else %}
+                                            <img src="{% static 'images/img3.jpg' %}" alt="">
+                                        {% endif %}
+                                    </div>    
+                                </div>
+                                <div class="col-12 col-lg-8">
+                                    <p class="name bold mb-2 pb-2">{{company.company_name}} </p>
+                                    <div class="review-box d-flex mb-2">
+                                        <div data-type = '{{company.overall}}'  class="stars d-flex rating-box">
+                                                <div class="star"><i class="far fa-star"></i></div>
+                                                <div class="star"><i class="far fa-star"></i></div>
+                                                <div class="star"><i class="far fa-star"></i></div>
+                                                <div class="star"><i class="far fa-star"></i></div>
+                                                <div class="star"><i class="far fa-star"></i></div>
+                                        </div>
+                                        <p class="review-text ml-2">{{company.company_comment.all.count}} reviews</p>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <p class="location">{{company.city_location}}, {{company.country_location}}</p>
+                                        <span class="ml-3 booking-count">
+                                            <span>
+                                                <svg width = 20 viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M15.5,5 C15.2239,5 15,5.223846 15,5.5 L15,6.5 C15,6.77615 15.2239,7 15.5,7 L17.5858,7 L14,10.58578 L12.70711,9.29291 L12.35355,8.93933 C12.15829,8.74408 11.84171,8.74408 11.64645,8.93933 L11.29289,9.29291 L5,15.5858 L5,7 L11.5,7 C11.77614,7 12,6.77615 12,6.5 L12,5.5 C12,5.22385 11.77614,5 11.5,5 L5,5 C3.89543,5 3,5.89542 3,7 L3,17 C3,18.1046 3.89543,19 5,19 L19,19 C20.1046,19 21,18.1046 21,17 L21,14.5 C21,14.2238 20.7761,14 20.5,14 L19.5,14 C19.2239,14 19,14.2238 19,14.5 L19,17 L6.4142,17 L12,11.41422 L13.2929,12.70709 L13.6464,13.06067 C13.8417,13.25592 14.1583,13.25592 14.3536,13.06067 L14.7071,12.70709 L19,8.41422 L19,10.5 C19,10.77615 19.2239,11 19.5,11 L20.5,11 C20.7761,11 21,10.77615 21,10.5 L21,6 L21,5.5 C21,5.223846 20.7761,5 20.5,5 L20,5 L15.5,5 Z" fill="#2D333F" fill-rule="nonzero"></path></g></svg>
+                                            </span>
+                                            <span>Booked {% for comment in comments %} {% if comment.company == company %}{{comment.reservation_count}} {% endif %}{% endfor %} times today</span>
+                                        </span>
+                                    </div>
+                                    <p class="description">
+                                        {% if company.description %}{{company.description|truncatechars:250}} {% else %} ...{% endif %}
+                                    </p>
+                                    <div class="d-flex align-items-center">
+                                        <span>TakeOut : </span>
+                                        <div class="ml-3 phone-number d-flex mt-2">
+                                            <i class="fas fa-phone-alt pr-2"></i> 
+                                            <p>{{company.phone_number}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a> 
+                    {% endfor %}
+                </div>
+            </div>
+                <div class="row mt-5">
+                    <div class="col text-center">
+                        <div class="block-27">
+                            {% if is_paginated %}
+                            <ul class="pagination d-flex justify-content-center">
+                                {% if page_obj.has_previous %}
+                                <li><a class='page-link' href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                                {% else %}
+                                <li class="disabled"><span class='page-link'>&laquo;</span></li>
+                                {% endif %}
+                                {% for i in paginator.page_range %}
+                                {% if page_obj.number == i %}
+                                    <li class="active"><span class='page-link'>{{ i }} <span class="sr-only">(current)</span></span></li>
+                                {% else %}
+                                    <li><a class='page-link' href="?page={{ i }}">{{ i }}</a></li>
+                                {% endif %}
+                                {% endfor %}
+                                {% if page_obj.has_next %}
+                                <li><a class='page-link' href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                                {% else %}
+                                <li class="disabled"><span class='page-link'>&raquo;</span></li>
+                                {% endif %}
+                            </ul>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </main>
+
+    {% include 'partials/footer.html' %}
+
+    <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>
+        $(document).ready(function(){
+
+            for(var index = 0; index < $('.rating-box').length; index++ ){
+                for(var i = 0; i< parseInt($('.rating-box').eq(index).data('type'));i++){
+                    $('.rating-box').eq(index).find('i').eq(i).removeClass('far').addClass('fas')
+            }
+            }
+        });
+        document.querySelectorAll('form#companyFilter > select').forEach(select_element => {
+            select_element.addEventListener('change', ()=>{
+                console.log(select_element.value);
+                const filterData = $('#companyFilter').serialize();
+                console.log(filterData);
+                    $.ajax({
+                        url: `{% url 'core:company-filter' company.city_location %}?${filterData}`,
+                        // data : filterData,
+                        success: function(data){
+                            document.querySelector('#company-Box').innerHTML = data;;
+                            
+                        },
+                        error: function(data){
+                            alert('error');
+                        }
+                    }).then(function(){
+                        
+                        for(var index = 0; index < $('.rating-box').length; index++ ){
+                            for(var i = 0; i< parseInt($('.rating-box').eq(index).data('type'));i++){
+                                $('.rating-box').eq(index).find('i').eq(i).removeClass('far').addClass('fas')
+                            }
+                        }
+
+                    });
+                    
+                    
+            })
+        })
+    </script>
+</body>
+</html>
